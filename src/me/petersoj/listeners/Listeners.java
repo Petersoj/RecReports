@@ -15,6 +15,4 @@ public class Listeners implements Listener {
     public void listen() {
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
-
-
 }
