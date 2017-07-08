@@ -13,7 +13,6 @@ public class Commands {
     }
 
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        
         return true;
     }
 

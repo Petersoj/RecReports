@@ -1,5 +1,6 @@
 # Stuffs to add
 #
 # amount of reports on victim before perm banned and further reviewed
-# The report type list that shows up in chat when using /report <player>
+# The report type list that shows up in chat when using /report <players>
 
+ban-threshold: 5

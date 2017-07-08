@@ -2,4 +2,18 @@ author: Petersoj
 name: RecReports
 main: me.petersoj.RecReportsPlugin
 version: 1.0
-description: A player reporting and recording plugin to prevent all types of hacking and behavior.
+description: A players reporting and recording plugin to prevent all types of hacking and behavior.
+commands:
+  report:
+    description: Report a player who might be hacking.
+    aliases: [recreport, recreports, reports]
+    permission: recreports.report
+  viewreports:
+    description: Open the report selection view.
+    aliases: [viewreport, vr]
+    permission: recreports.viewreports
+permissions:
+  recreports.report:
+    default: true
+  recreports.viewreports:
+    default: op

@@ -1,2 +1,7 @@
 FONT - http://www.1001fonts.com/cocogoose-letterpress-font.html
 
+Big font = 240 pt
+Small font = 72 pt
+
+Stuff to put for Notes section: Bug reports, Suggestions, Support, Before you buy
+

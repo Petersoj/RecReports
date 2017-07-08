@@ -13,6 +13,7 @@ public class RecReportsPlugin extends JavaPlugin {
     private Listeners listeners;
     private Commands commands;
 
+
     @Override
     public void onEnable() {
         this.recReportsController = new RecReportsController(this);
