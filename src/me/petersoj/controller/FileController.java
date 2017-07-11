@@ -7,4 +7,8 @@ package me.petersoj.controller;
 
 public class FileController {
 
+    public FileController() {
+
+    }
+
 }

@@ -8,9 +8,7 @@ import org.bukkit.material.MaterialData;
 
 import java.util.Arrays;
 import java.util.Collection;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
+import java.util.List;
 
 
 /**
@@ -21,7 +19,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public final class ItemBuilder {
 
-    private Material material;
+    private Material material = Material.AIR;
     private Integer amount;
     private MaterialData data;
     private Short durability;
@@ -29,24 +27,28 @@ public final class ItemBuilder {
     private String localizedName;
     private Boolean unbreakable = false;
     private ItemFlag[] flags;
-    private String[] lore;
+    private List<String> lore;
 
+    // Default empty constructor choice
     public ItemBuilder() {
     }
 
+    public ItemBuilder(Material material) {
+        this.material = material;
+    }
+
     public ItemBuilder material(Material material) {
-        this.material = checkNotNull(material);
+        this.material = material;
         return this;
     }
 
     public ItemBuilder amount(int amount) {
-        checkArgument(amount > 0);
         this.amount = amount;
         return this;
     }
 
     public ItemBuilder data(MaterialData data) {
-        this.data = checkNotNull(data);
+        this.data = data;
         return this;
     }
 
@@ -57,18 +59,17 @@ public final class ItemBuilder {
     }
 
     public ItemBuilder durability(short durability) {
-        checkArgument(durability > 0);
         this.durability = durability;
         return this;
     }
 
     public ItemBuilder name(String name) {
-        this.name = checkNotNull(name);
+        this.name = name;
         return this;
     }
 
     public ItemBuilder localizedName(String localizedName) {
-        this.localizedName = checkNotNull(localizedName);
+        this.localizedName = localizedName;
         return this;
     }
 
@@ -78,7 +79,6 @@ public final class ItemBuilder {
     }
 
     public ItemBuilder flags(ItemFlag... flags) {
-        this.flags = checkNotNull(flags);
         return this;
     }
 
@@ -88,17 +88,17 @@ public final class ItemBuilder {
     }
 
     public ItemBuilder lore(String... lore) {
-        this.lore = checkNotNull(lore);
+        this.lore = Arrays.asList(lore);
         return this;
     }
 
-    public ItemBuilder lore(Collection<String> lore) {
-        this.lore = lore.toArray(new String[lore.size()]);
+    public ItemBuilder lore(List<String> lore) {
+        this.lore = lore;
         return this;
     }
 
     public ItemStack build() {
-        final ItemStack item = new ItemStack(checkNotNull(material, "Material cannot be null"));
+        final ItemStack item = new ItemStack(material);
         final ItemMeta meta = item.getItemMeta();
         if (amount != null) {
             item.setAmount(amount);
@@ -122,7 +122,7 @@ public final class ItemBuilder {
             meta.addItemFlags(flags);
         }
         if (lore != null) {
-            meta.setLore(Arrays.asList(lore));
+            meta.setLore(lore);
         }
         item.setItemMeta(meta);
         return item;

@@ -1,6 +1,8 @@
 # Stuffs to add
 #
 # amount of reports on victim before perm banned and further reviewed
+# amount of reports on victim before recording
 # The report type list that shows up in chat when using /report <players>
+# The amount of time to record when hit record-threshhold
 
 ban-threshold: 5
