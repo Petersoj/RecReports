@@ -2,9 +2,10 @@ package me.petersoj.listeners;
 
 import me.petersoj.RecReportsPlugin;
 import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
-public class Commands {
+public class Commands implements CommandExecutor {
 
     private RecReportsPlugin plugin;
 
@@ -15,5 +16,4 @@ public class Commands {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         return true;
     }
-
 }

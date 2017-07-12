@@ -34,6 +34,7 @@ public class RecReportsPlugin extends JavaPlugin {
 
     }
 
+    // So I don't have to set every commands' executor
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         return commands.onCommand(sender, command, label, args);
