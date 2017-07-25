@@ -14,4 +14,8 @@ public class RecReportsController {
         this.plugin = plugin;
     }
 
+    public void start() {
+
+    }
+
 }

@@ -22,14 +22,21 @@ public class RecReportsPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        // Init Controllers
         this.recReportsController = new RecReportsController(this);
         this.reportsController = new ReportsController();
         this.recordingController = new RecordingController();
-        this.fileController = new FileController();
+        this.fileController = new FileController(this);
 
+        // Init Listening
         this.listeners = new Listeners(this);
         this.commands = new Commands(this);
 
+        // Start controllers
+        this.recReportsController.start();
+        this.fileController.start();
+
+        // Listen for events
         this.listeners.listen();
 
     }

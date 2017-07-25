@@ -5,4 +5,38 @@
 # The report type list that shows up in chat when using /report <players>
 # The amount of time to record when hit record-threshhold
 
-ban-threshold: 5
+# This is the config file for RecReports!
+# It is VERY important to read all the information in this file
+# and make adjustments according to you and your servers needs.
+# This file should be edited before your server goes fully live.
+
+#
+
+# This number specifies the amount of reports needed on a player before
+# their actions start to be recorded. This number MUST be lower than the
+# ban threshold, otherwise the player may be banned forever, without
+# even having their actions recorded for review. You should change this
+# number depending on how many people are on your server at one time.
+record-threshold: 6
+
+# This number specifies the amount of reports needed on a player before
+# they are banned from the server until their report is reviewed.
+# This number MUST be higher than the record threshold, otherwise the
+# player may be banned forever, without their recording being reviewed.
+# You should change this number depending on how many people are on your
+# server at one time.
+ban-threshold: 13
+
+# This number defines the amount of time, in minutes, that a players
+# actions will be recorded, after the record threshold has been met.
+# If a player is reported while their actions are being recorded,
+# then the report is accounted for, and the recording will still proceed.
+# This higher this number, then the more space on disk will be taken up
+# for each recording.
+per-report-record-time: 5
+
+# This list supports color codes.
+report-type-list:
+  - &9 Movement Hacking
+  - &c Combat Hacking
+  - &6 Other /‾‾‾‾‾‾‾‾Please specify

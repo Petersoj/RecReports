@@ -14,18 +14,18 @@ import java.util.List;
 /**
  * Builder pattern for an {@link ItemStack}.
  *
- * @author Lukas Nehrke
+ * @author Lukas Nehrke (edited by Jacob Peterson)
  * @version 1.0
  */
 public final class ItemBuilder {
 
     private Material material = Material.AIR;
-    private Integer amount;
+    private int amount = 1;
     private MaterialData data;
-    private Short durability;
+    private short durability = -1;
     private String name;
     private String localizedName;
-    private Boolean unbreakable = false;
+    private boolean unbreakable = false;
     private ItemFlag[] flags;
     private List<String> lore;
 
@@ -100,13 +100,12 @@ public final class ItemBuilder {
     public ItemStack build() {
         final ItemStack item = new ItemStack(material);
         final ItemMeta meta = item.getItemMeta();
-        if (amount != null) {
-            item.setAmount(amount);
-        }
+        
+        item.setAmount(amount);
         if (data != null) {
             item.setData(data);
         }
-        if (durability != null) {
+        if (durability > 0) {
             item.setDurability(durability);
         }
         if (name != null) {
@@ -115,9 +114,7 @@ public final class ItemBuilder {
         if (localizedName != null) {
             meta.setLocalizedName(localizedName);
         }
-        if (unbreakable != null) {
-            meta.setUnbreakable(unbreakable);
-        }
+        meta.setUnbreakable(unbreakable);
         if (flags != null) {
             meta.addItemFlags(flags);
         }
