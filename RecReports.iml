@@ -7,8 +7,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" scope="PROVIDED" name="craftbukkit-1.12-R0.1-SNAPSHOT" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="craftbukkit-1.8.8-R0.1-SNAPSHOT" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="bukkit-1.8.8-R0.1-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="craftbukkit-1.8.8-R0.1-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="craftbukkit-1.12-R0.1-SNAPSHOT" level="project" />
   </component>
 </module>

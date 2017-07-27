@@ -1,0 +1,4 @@
+TODO
+- Report needs multiple reviews by reviewers before ban. (Review ban max can be set in config)
+- Mark for further review button.
+- Add report review ban-able permission

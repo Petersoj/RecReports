@@ -5,12 +5,12 @@ import org.bukkit.OfflinePlayer;
 
 import java.util.UUID;
 
-public class RecReportsPlayer {
+public class ReportPlayer {
 
     private UUID uuid;
     private String playerName;
 
-    public RecReportsPlayer(UUID uuid, String playerName) {
+    public ReportPlayer(UUID uuid, String playerName) {
         this.uuid = uuid;
         this.playerName = playerName;
     }

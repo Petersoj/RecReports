@@ -32,13 +32,10 @@ public class RecReportsPlugin extends JavaPlugin {
         this.listeners = new Listeners(this);
         this.commands = new Commands(this);
 
-        // Start controllers
+        // Start controllers and listeners
         this.recReportsController.start();
         this.fileController.start();
-
-        // Listen for events
         this.listeners.listen();
-
     }
 
     // So I don't have to set every commands' executor

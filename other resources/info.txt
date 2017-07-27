@@ -5,3 +5,10 @@ Small font = 72 pt
 
 Stuff to put for Notes section: Bug reports, Suggestions, Support, Before you buy
 
+ANTI PIRACY IDEAS
+- Of course hardcore obfuscate. especially the spigotmc.org check stuff.
+- Then the check with spigotmc.org method with:
+- On start, do check only if server is in online mode, but if it completely fails cause no internet,
+  then keep retrying.
+- Retry the entire time if the server is still in online mode. on timer
+- then if finally you get a connection and response, then delete jar file/or not based on that response.

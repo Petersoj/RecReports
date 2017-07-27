@@ -82,10 +82,10 @@ public class Listeners implements Listener {
 
 
             NBTTagCompound compound = new NBTTagCompound();
-            compound.set("Text2", new NBTTagString("{\"text\":\"" + convertUnicodeString("\u203E\u203E\u203E\u203E\u203E\u203E\u203E\u203E\u203E\u203E") + "\"}"));
             compound.set("Text1", new NBTTagString("{\"text\":\"\"}"));
-            compound.set("Text3", new NBTTagString("{\"text\":\"asdfasdf\"}"));
-            compound.set("Text4", new NBTTagString("{\"text\":\"asdfasdf\"}"));
+            compound.set("Text2", new NBTTagString("{\"text\":\"\"}"));
+            compound.set("Text3", new NBTTagString("{\"text\":\"\"}"));
+            compound.set("Text4", new NBTTagString("{\"text\":\"\"}"));
 
             compound.set("x", new NBTTagInt(location.getBlockX()));
             compound.set("y", new NBTTagInt(location.getBlockY()));
@@ -99,10 +99,10 @@ public class Listeners implements Listener {
                 @Override
                 public void run() {
                     NBTTagCompound compound = new NBTTagCompound();
-                    compound.set("Text2", new NBTTagString("{\"text\":\"" + convertUnicodeString("\u203E\u203E\u203E\u203E\u203E\u203E\u203E\u203E\u203E\u203E") + "\"}"));
+                    compound.set("Text2", new NBTTagString("{\"text\":\"" + convertUnicodeString("\u203E\u203E\u203E\u203E\u203E\u203E\u203E\u203E\u203E\u203E\u203E\u203E\u203E\u203E\u203E\u203E\u203E\u203E\u203E\u203E\u203E\u203E\u203E\u203E\u203E\u203E\u203E\u203E\u203E\u203E\u203E\u203E\u203E\u203E\u203E\u203E\u203E\u203E\u203E") + "\"}"));
                     compound.set("Text1", new NBTTagString("{\"text\":\"\"}"));
-                    compound.set("Text3", new NBTTagString("{\"text\":\"hey\"}"));
-                    compound.set("Text4", new NBTTagString("{\"text\":\"there\"}"));
+                    compound.set("Text3", new NBTTagString("{\"text\":\"asfddfsafdsasfdasdfasfadfsadfsadfsdasdfa\"}"));
+                    compound.set("Text4", new NBTTagString("{\"text\":\"asdfasdfadfsdfsafdsfdsa\"}"));
 
                     compound.set("x", new NBTTagInt(location.getBlockX()));
                     compound.set("y", new NBTTagInt(location.getBlockY()));
@@ -122,9 +122,6 @@ public class Listeners implements Listener {
 
         if (e.getMessage().equals("/book")) {
             openBook(new ItemStack(Material.BOOK), e.getPlayer());
-        }
-        if (e.getMessage().equals("/report")) {
-            System.out.println(plugin.getFileController().createReportFile(e.getPlayer().getUniqueId()) != null);
         }
     }
 

@@ -53,8 +53,9 @@ public final class ItemBuilder {
     }
 
     @SuppressWarnings("deprecation")
-    public ItemBuilder data(byte data) {
-        this.data = new MaterialData(data);
+    public ItemBuilder data(int data) {
+        this.data = new MaterialData(material);
+        this.data.setData((byte) data);
         return this;
     }
 
@@ -100,7 +101,7 @@ public final class ItemBuilder {
     public ItemStack build() {
         final ItemStack item = new ItemStack(material);
         final ItemMeta meta = item.getItemMeta();
-        
+
         item.setAmount(amount);
         if (data != null) {
             item.setData(data);
@@ -111,10 +112,11 @@ public final class ItemBuilder {
         if (name != null) {
             meta.setDisplayName(name);
         }
-        if (localizedName != null) {
-            meta.setLocalizedName(localizedName);
-        }
-        meta.setUnbreakable(unbreakable);
+//        Below Removed for 1.8 compatibility
+//        if (localizedName != null) {
+//            meta.setLocalizedName(localizedName);
+//        }
+//        meta.setUnbreakable(unbreakable);
         if (flags != null) {
             meta.addItemFlags(flags);
         }

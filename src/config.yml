@@ -1,10 +1,3 @@
-# Stuffs to add
-#
-# amount of reports on victim before perm banned and further reviewed
-# amount of reports on victim before recording
-# The report type list that shows up in chat when using /report <players>
-# The amount of time to record when hit record-threshhold
-
 # This is the config file for RecReports!
 # It is VERY important to read all the information in this file
 # and make adjustments according to you and your servers needs.
@@ -17,7 +10,8 @@
 # ban threshold, otherwise the player may be banned forever, without
 # even having their actions recorded for review. You should change this
 # number depending on how many people are on your server at one time.
-record-threshold: 6
+# 5 is a good default value.
+record-threshold: 5
 
 # This number specifies the amount of reports needed on a player before
 # they are banned from the server until their report is reviewed.
@@ -25,7 +19,8 @@ record-threshold: 6
 # player may be banned forever, without their recording being reviewed.
 # You should change this number depending on how many people are on your
 # server at one time.
-ban-threshold: 13
+# 15 is a good default value
+ban-threshold: 15
 
 # This number defines the amount of time, in minutes, that a players
 # actions will be recorded, after the record threshold has been met.
@@ -33,10 +28,25 @@ ban-threshold: 13
 # then the report is accounted for, and the recording will still proceed.
 # This higher this number, then the more space on disk will be taken up
 # for each recording.
-per-report-record-time: 5
+# 5 minutes is a good default value.
+recording-time: 5
 
-# This list supports color codes.
+# This is the list that shows up in that when a player types the "/report"
+# command. This list will provide the reporting player types of
+# hacking and/or behavior to choose from. This list should be concise
+# and shouldn't contain specific hacks, as that would get very large and
+# would be overwhelming to choose one. This list should be less than 10
+# items in size, but you can have more if you want. The 'other' option
+# is the option that will bring up the sign GUI to type a custom message
+# into. This list supports color codes.
+# Make sure that you use 2 spaces to indent, and not a 'tab'.
 report-type-list:
   - &9 Movement Hacking
   - &c Combat Hacking
-  - &6 Other /‾‾‾‾‾‾‾‾Please specify
+  - &f Chat
+  - &e Other
+
+# This option sets the cooldown time, in seconds, before a player can use
+# the "/report" command again. This prevents players spamming this command.
+# 120 seconds is a good default value.
+report-command-cooldown: 120

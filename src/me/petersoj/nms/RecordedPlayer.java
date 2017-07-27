@@ -6,29 +6,36 @@ import java.util.UUID;
 
 public abstract class RecordedPlayer {
 
-    private String name;
     private UUID uuid;
+    private String name;
     private String skinProfile;
 
-    public RecordedPlayer(String name, UUID uuid, String skinProfile) {
-        this.name = name;
+    public RecordedPlayer(UUID uuid, String name, String skinProfile) {
         this.uuid = uuid;
+        this.name = name;
         this.skinProfile = skinProfile;
-
     }
 
     public abstract void spawn();
+
+    public abstract void look(float yaw, float pitch);
 
     public abstract void moveTo(Location location);
 
     public abstract void teleport(Location location);
 
-    public String getName() {
-        return name;
-    }
+    public abstract void setSneaking(boolean sneak);
+
+    public abstract void swingArm();
+
+    public abstract void setOnFire(boolean onFire);
 
     public UUID getUuid() {
         return uuid;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public String getSkinProfile() {
