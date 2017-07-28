@@ -7,6 +7,7 @@ import me.petersoj.util.JsonUtils;
 import java.io.File;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.UUID;
 
 /**
  * This class represents the folder in the data directory that holds
@@ -16,31 +17,59 @@ public class ReportsFolder {
 
     private FileController fileController;
 
-    private File reportsFolder;
-    private ReportSummary reportSummary;
-    private ArrayList<Report> reports;
-    private Type reportsListType;
+    private UUID playerUUID;
+    private File folder; // A reference to this ReportsFolder in the file system.
+    private ReportInfo reportInfo; // Info data stored in info.txt
+    private ArrayList<Report> reports; // Reports stored in reports.txt
+    private Type reportsListType; // Needed for Gson [de]serializing.
 
-    public ReportsFolder(FileController fileController, File reportsFolder) {
+    public ReportsFolder(FileController fileController, UUID playerUUID, File folder) {
         this.fileController = fileController;
-        this.reportsFolder = reportsFolder;
-        this.reportsListType = new TypeToken<ArrayList<Report>>() { // Anonymous for some generic speciality.
-        }.getType();
+        this.playerUUID = playerUUID;
+        this.folder = folder;
+
+        this.reportsListType = new TypeToken<ArrayList<Report>>() {
+        }.getType(); // Anonymous for some speciality.
     }
 
-    public void saveMetadata() {
-        String summaryJson = JsonUtils.getGson().toJson(reportSummary);
-        fileController.saveSmallFile(reportsFolder, "summary.txt", summaryJson);
+    public void saveData() {
+        String infoJson = JsonUtils.getGson().toJson(reportInfo);
+        fileController.saveSmallFile(folder, "info.txt", infoJson);
 
         String reportsJson = JsonUtils.getGson().toJson(reports, reportsListType);
-        fileController.saveSmallFile(reportsFolder, "reports.txt", reportsJson);
+        fileController.saveSmallFile(folder, "reports.txt", reportsJson);
     }
 
-    public void readMetadata() {
-        String summaryJson = fileController.readFileFully(reportsFolder, "summary.txt");
-        this.reportSummary = JsonUtils.getGson().fromJson(summaryJson, ReportSummary.class);
+    public void readData() {
+        String infoJson = fileController.readFileFully(folder, "info.txt");
+        this.reportInfo = JsonUtils.getGson().fromJson(infoJson, ReportInfo.class);
 
-        String reportsJson = fileController.readFileFully(reportsFolder, "reports.txt");
+        String reportsJson = fileController.readFileFully(folder, "reports.txt");
         this.reports = JsonUtils.getGson().fromJson(reportsJson, reportsListType);
+    }
+
+    public Report getReportByID(int reportID) {
+        for (Report report : reports) {
+            if (report.getReportID() == reportID) {
+                return report;
+            }
+        }
+        return null;
+    }
+
+    public void addReport(Report report) {
+        reports.add(report);
+    }
+
+    public UUID getPlayerUUID() {
+        return playerUUID;
+    }
+
+    public File getFolder() {
+        return folder;
+    }
+
+    public ReportInfo getReportInfo() {
+        return reportInfo;
     }
 }

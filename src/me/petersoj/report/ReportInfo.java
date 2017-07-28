@@ -1,25 +1,21 @@
 package me.petersoj.report;
 
 /**
- * This class is just a data holder for Summary.txt and Gson will do the [de]serializing.
+ * This class is just a data holder for info.txt and Gson will do the [de]serializing.
  */
-public class ReportSummary {
+public class ReportInfo {
 
-    private String playerName;
+    private ReportPlayer reportedPlayer = new ReportPlayer(null, ""); // Default ReportPlayer
     private int totalReports;
     private int totalRecordings;
-    private String mostReportedType;
+    private String mostReportedType = "N/A"; // N/A for default
     private long lastReportTime;
     private long firstReportTime;
     private long lastReviewedTime;
     private int timesReviewed;
 
-    public String getPlayerName() {
-        return playerName;
-    }
-
-    public void setPlayerName(String playerName) {
-        this.playerName = playerName;
+    public ReportPlayer getReportedPlayer() {
+        return reportedPlayer;
     }
 
     public int getTotalReports() {

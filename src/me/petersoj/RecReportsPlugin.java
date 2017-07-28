@@ -6,6 +6,7 @@ import me.petersoj.controller.RecordingController;
 import me.petersoj.controller.ReportsController;
 import me.petersoj.listeners.Commands;
 import me.petersoj.listeners.Listeners;
+import me.petersoj.util.LogUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -22,6 +23,9 @@ public class RecReportsPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        // Set Utils instances up
+        LogUtils.setPluginInstance(this);
+
         // Init Controllers
         this.recReportsController = new RecReportsController(this);
         this.reportsController = new ReportsController();
@@ -36,6 +40,11 @@ public class RecReportsPlugin extends JavaPlugin {
         this.recReportsController.start();
         this.fileController.start();
         this.listeners.listen();
+    }
+
+    @Override
+    public void onDisable() {
+        // Close current Recordings
     }
 
     // So I don't have to set every commands' executor

@@ -10,14 +10,13 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-
 /**
  * Builder pattern for an {@link ItemStack}.
  *
  * @author Lukas Nehrke (edited by Jacob Peterson)
  * @version 1.0
  */
-public final class ItemBuilder {
+public class ItemBuilder {
 
     private Material material = Material.AIR;
     private int amount = 1;
@@ -112,11 +111,14 @@ public final class ItemBuilder {
         if (name != null) {
             meta.setDisplayName(name);
         }
+
 //        Below Removed for 1.8 compatibility
+//
 //        if (localizedName != null) {
 //            meta.setLocalizedName(localizedName);
 //        }
 //        meta.setUnbreakable(unbreakable);
+
         if (flags != null) {
             meta.addItemFlags(flags);
         }

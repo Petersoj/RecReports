@@ -2,7 +2,7 @@ package me.petersoj.controller;
 
 import me.petersoj.RecReportsPlugin;
 import me.petersoj.report.ReportsFolder;
-import me.petersoj.util.ExceptionUtils;
+import me.petersoj.util.LogUtils;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.io.*;
@@ -16,14 +16,15 @@ import java.util.UUID;
  */
 public class FileController {
 
-    private RecReportsPlugin plugin;
 
+    private RecReportsPlugin plugin;
     private File dataFolder;
     private int recordThreshold;
     private int banThreshold;
     private int recordingTime;
     private List<String> reportTypes;
     private int reportCommandCooldown;
+    private boolean loggingEnabled;
 
     public FileController(RecReportsPlugin plugin) {
         this.plugin = plugin;
@@ -44,22 +45,23 @@ public class FileController {
         this.recordingTime = config.getInt("recording-time");
         this.reportTypes = (List<String>) config.getList("report-type-list");
         this.reportCommandCooldown = config.getInt("report-command-cooldown");
+        this.loggingEnabled = config.getBoolean("logging-enabled");
     }
 
     private void setupDataFolder() {
         this.dataFolder = new File(plugin.getDataFolder(), "/ReportData");
 
         if (!dataFolder.mkdir() && !dataFolder.exists()) { // If the directory wasn't made at all.
-            ExceptionUtils.handleError(new IOException("The Report Data folder could not be created!"), true);
+            LogUtils.handleError(new IOException("The Report Data folder could not be created!"), true);
         }
     }
 
     public ReportsFolder getReportsFolder(UUID playerUUID) {
         File reportFile = new File(dataFolder, playerUUID.toString());
         if (!reportFile.mkdir() && !reportFile.exists()) { // If the directory wasn't made at all.
-            ExceptionUtils.handleError(new IOException("The Report File could not be created!"), false);
+            LogUtils.handleError(new IOException("The Report File could not be created!"), false);
         }
-        return new ReportsFolder(this, reportFile);
+        return new ReportsFolder(this, playerUUID, reportFile);
     }
 
     public void saveSmallFile(File path, String fileName, String contents) {
@@ -70,7 +72,7 @@ public class FileController {
         try {
             Files.write(pathToFile.toPath(), contents.getBytes("UTF-8")); // Default OpenOptions are perfect here
         } catch (IOException e) {
-            ExceptionUtils.handleError(e, false);
+            LogUtils.handleError(e, false);
         }
     }
 
@@ -84,7 +86,7 @@ public class FileController {
             byte[] fileBytes = Files.readAllBytes(pathToFile.toPath());
             contents = new String(fileBytes);
         } catch (IOException e) {
-            ExceptionUtils.handleError(e, false);
+            LogUtils.handleError(e, false);
         }
         return contents;
     }
@@ -97,7 +99,7 @@ public class FileController {
         try {
             return new BufferedWriter(new OutputStreamWriter(new FileOutputStream(pathToFile), "UTF-8")); // default buffer size if good.
         } catch (IOException e) {
-            ExceptionUtils.handleError(e, false);
+            LogUtils.handleError(e, false);
         }
         return null;
     }
@@ -124,5 +126,9 @@ public class FileController {
 
     public int getReportCommandCooldown() {
         return reportCommandCooldown;
+    }
+
+    public boolean isLoggingEnabled() {
+        return loggingEnabled;
     }
 }

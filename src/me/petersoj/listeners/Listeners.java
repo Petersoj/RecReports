@@ -2,6 +2,7 @@ package me.petersoj.listeners;
 
 import io.netty.buffer.Unpooled;
 import me.petersoj.RecReportsPlugin;
+import me.petersoj.listeners.events.SignUpdateEvent;
 import net.minecraft.server.v1_12_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -19,7 +20,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.io.UnsupportedEncodingException;
 
 
-public class Listeners implements Listener {
+public class Listeners implements Listener, SignUpdateEvent {
 
     private RecReportsPlugin plugin;
 
@@ -32,38 +33,44 @@ public class Listeners implements Listener {
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
+
+    @Override
+    public void onSignUpdate(Location location, String[] lines) {
+        // Process 'other' report type
+    }
+
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
 //        ((CraftPlayer) e.getPlayer()).getHandle().playerConnection.networkManager.channel.pipeline().addBefore("packet_handler", "something", new ChannelDuplexHandler() {
 //
 //            @Override
 //            public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
-//                if (msg instanceof PacketPlayOutTileEntityData) {
-//                    try {
-//
-//                        PacketPlayOutTileEntityData data = (PacketPlayOutTileEntityData) msg;
-//                        Field field = data.getClass().getDeclaredField("c");
-//                        field.setAccessible(true);
-//
-//                        NBTTagCompound compound = (NBTTagCompound) field.get(data);
-//                        Field map = compound.getClass().getDeclaredField("map");
-//                        map.setAccessible(true);
-//
-//                        Map<String, NBTBase> map1 = (Map<String, NBTBase>) map.get(compound);
-//                        for (String str : map1.keySet()) {
-//                            Bukkit.broadcastMessage(str + " " + map1.get(str));
-//                        }
-//
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
-//                }
+////                if (msg instanceof PacketPlayOutTileEntityData) {
+////                    try {
+////
+////                        PacketPlayOutTileEntityData data = (PacketPlayOutTileEntityData) msg;
+////                        Field field = data.getClass().getDeclaredField("c");
+////                        field.setAccessible(true);
+////
+////                        NBTTagCompound compound = (NBTTagCompound) field.get(data);
+////                        Field map = compound.getClass().getDeclaredField("map");
+////                        map.setAccessible(true);
+////
+////                        Map<String, NBTBase> map1 = (Map<String, NBTBase>) map.get(compound);
+////                        for (String str : map1.keySet()) {
+////                            Bukkit.broadcastMessage(str + " " + map1.get(str));
+////                        }
+////
+////                    } catch (Exception e) {
+////                        e.printStackTrace();
+////                    }
+////                }
 //                super.write(ctx, msg, promise);
 //            }
 //
 //            @Override
 //            public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-//                if (msg instanceof Packet) {
+//                if (msg instanceof PacketPlayInUpdateSign) {
 //                    System.out.println(msg.getClass().getSimpleName());
 //                }
 //                super.channelRead(ctx, msg);

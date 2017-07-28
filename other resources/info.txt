@@ -5,6 +5,9 @@ Small font = 72 pt
 
 Stuff to put for Notes section: Bug reports, Suggestions, Support, Before you buy
 
+CODE RELATED
+- for 1.8.8 NPC:  https://pastebin.com/8dn1wAvH
+
 ANTI PIRACY IDEAS
 - Of course hardcore obfuscate. especially the spigotmc.org check stuff.
 - Then the check with spigotmc.org method with:

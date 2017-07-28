@@ -10,16 +10,17 @@
 # ban threshold, otherwise the player may be banned forever, without
 # even having their actions recorded for review. You should change this
 # number depending on how many people are on your server at one time.
-# 5 is a good default value.
+# 5 reports is a good default value.
 record-threshold: 5
 
 # This number specifies the amount of reports needed on a player before
-# they are banned from the server until their report is reviewed.
+# they are banned from the server until their report is reviewed and
+# a decision is made to un-ban the player or keep the player banned.
 # This number MUST be higher than the record threshold, otherwise the
 # player may be banned forever, without their recording being reviewed.
 # You should change this number depending on how many people are on your
 # server at one time.
-# 15 is a good default value
+# 15 reports is a good default value
 ban-threshold: 15
 
 # This number defines the amount of time, in minutes, that a players
@@ -50,3 +51,8 @@ report-type-list:
 # the "/report" command again. This prevents players spamming this command.
 # 120 seconds is a good default value.
 report-command-cooldown: 120
+
+# This option enables or disables console logging of warnings and other
+# useful information. This option does not disable errors in the console log.
+# Use true or false.
+logging-enabled: true

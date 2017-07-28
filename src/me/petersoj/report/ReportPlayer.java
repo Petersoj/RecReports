@@ -9,18 +9,25 @@ public class ReportPlayer {
 
     private UUID uuid;
     private String playerName;
+    private String skinProfileValue;
+    private String skinProfileSignature;
 
     public ReportPlayer(UUID uuid, String playerName) {
         this.uuid = uuid;
         this.playerName = playerName;
+        this.skinProfileValue = "";
+        this.skinProfileSignature = "";
+    }
+
+    public ReportPlayer(UUID uuid, String playerName, String skinProfileValue, String skinProfileSignature) {
+        this.uuid = uuid;
+        this.playerName = playerName;
+        this.skinProfileValue = skinProfileValue;
+        this.skinProfileSignature = skinProfileSignature;
     }
 
     public OfflinePlayer getOfflinePlayer() {
-        OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
-        if (offlinePlayer.hasPlayedBefore()) {
-            return offlinePlayer;
-        }
-        return null;
+        return Bukkit.getOfflinePlayer(uuid);
     }
 
     public UUID getUuid() {
@@ -37,5 +44,21 @@ public class ReportPlayer {
 
     public void setPlayerName(String playerName) {
         this.playerName = playerName;
+    }
+
+    public String getSkinProfileValue() {
+        return skinProfileValue;
+    }
+
+    public void setSkinProfileValue(String skinProfileValue) {
+        this.skinProfileValue = skinProfileValue;
+    }
+
+    public String getSkinProfileSignature() {
+        return skinProfileSignature;
+    }
+
+    public void setSkinProfileSignature(String skinProfileSignature) {
+        this.skinProfileSignature = skinProfileSignature;
     }
 }
