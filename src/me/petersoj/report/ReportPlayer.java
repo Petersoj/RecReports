@@ -5,21 +5,27 @@ import org.bukkit.OfflinePlayer;
 
 import java.util.UUID;
 
+/**
+ * This class represents a player's UUID, name, and skin data, as well as the ID for recordings.
+ */
 public class ReportPlayer {
 
+    private int playerID; // The ID used for referencing this player in a recording.
     private UUID uuid;
     private String playerName;
     private String skinProfileValue;
     private String skinProfileSignature;
 
-    public ReportPlayer(UUID uuid, String playerName) {
+    public ReportPlayer(int playerID, UUID uuid, String playerName) {
+        this.playerID = playerID;
         this.uuid = uuid;
         this.playerName = playerName;
         this.skinProfileValue = "";
         this.skinProfileSignature = "";
     }
 
-    public ReportPlayer(UUID uuid, String playerName, String skinProfileValue, String skinProfileSignature) {
+    public ReportPlayer(int playerID, UUID uuid, String playerName, String skinProfileValue, String skinProfileSignature) {
+        this.playerID = playerID;
         this.uuid = uuid;
         this.playerName = playerName;
         this.skinProfileValue = skinProfileValue;
@@ -30,7 +36,7 @@ public class ReportPlayer {
         return Bukkit.getOfflinePlayer(uuid);
     }
 
-    public UUID getUuid() {
+    public UUID getUUID() {
         return uuid;
     }
 

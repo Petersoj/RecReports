@@ -25,6 +25,7 @@ public class LocationAdapter implements JsonSerializer<Location>, JsonDeserializ
         } else if (location.getPitch() != 0f) {
             object.addProperty("pitch", location.getPitch());
         }
+
         return object;
     }
 

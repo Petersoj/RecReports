@@ -1,20 +1,25 @@
 package me.petersoj.nms;
 
+import me.petersoj.RecReportsPlugin;
 import me.petersoj.report.ReportPlayer;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public abstract class RecordedPlayer {
 
-    private int recordedPlayerID; // The ID used for referencing this player in a recording
-    private ReportPlayer reportPlayer;
+    private RecReportsPlugin plugin;
 
-    public RecordedPlayer(int recordedPlayerID, ReportPlayer reportPlayer) {
-        this.recordedPlayerID = recordedPlayerID;
+    private ReportPlayer reportPlayer;
+    private Player sendPacketsPlayer;
+
+    public RecordedPlayer(RecReportsPlugin plugin, ReportPlayer reportPlayer, Player sendPacketsPlayer) {
+        this.plugin = plugin;
         this.reportPlayer = reportPlayer;
+        this.sendPacketsPlayer = sendPacketsPlayer;
     }
 
-    public abstract void spawn();
+    public abstract void spawn(Location location);
 
     public abstract void despawn();
 
@@ -30,8 +35,6 @@ public abstract class RecordedPlayer {
 
     public abstract void setOnFire(boolean onFire);
 
-    public abstract void chatMessage(String message);
-
 
     public abstract void setMainHandItem(ItemStack item);
 
@@ -45,11 +48,15 @@ public abstract class RecordedPlayer {
 
     public abstract void setBoots(ItemStack item);
 
-    public int getRecordedPlayerID() {
-        return recordedPlayerID;
+    public RecReportsPlugin getPlugin() {
+        return plugin;
     }
 
     public ReportPlayer getReportPlayer() {
         return reportPlayer;
+    }
+
+    public Player getSendPacketsPlayer() {
+        return sendPacketsPlayer;
     }
 }

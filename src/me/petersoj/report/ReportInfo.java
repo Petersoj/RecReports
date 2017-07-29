@@ -5,7 +5,7 @@ package me.petersoj.report;
  */
 public class ReportInfo {
 
-    private ReportPlayer reportedPlayer = new ReportPlayer(null, ""); // Default ReportPlayer
+    private ReportPlayer reportedPlayer = new ReportPlayer(0, null, ""); // Default ReportPlayer, ID is always 0 for reportedPlayer.
     private int totalReports;
     private int totalRecordings;
     private String mostReportedType = "N/A"; // N/A for default
