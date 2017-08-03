@@ -1,6 +1,9 @@
 package me.petersoj.listeners;
 
 import com.google.common.collect.Maps;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -23,9 +26,14 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 
 public class Listeners implements Listener, SignUpdateEvent {
@@ -185,6 +193,30 @@ public class Listeners implements Listener, SignUpdateEvent {
 
         if (e.getMessage().equals("/glow")) {
 //            setGlowing(e.getPlayer(), Bukkit.getPlayer("Mateothebeast97"), !((CraftPlayer) e.getPlayer()).getHandle().glowing);
+            Gson gson = new GsonBuilder().create();
+            HashMap<UUID, HashMap<UUID, Vector>> map = new HashMap<>();
+
+            HashMap<UUID, Vector> otherMap = new HashMap<>();
+            otherMap.put(e.getPlayer().getUniqueId(), new Vector(2, 2, 300000));
+
+            map.put(e.getPlayer().getUniqueId(), otherMap);
+            map.put(UUID.fromString("675c8d83-fbe5-4824-832c-6cadb2ed448d"), otherMap);
+
+            try {
+                Files.write(Paths.get("/Users/Jacob/Desktop/text.txt"), gson.toJson(map).getBytes());
+            } catch (Exception ee) {
+                ee.printStackTrace();
+            }
+
+
+            try {
+                byte[] bytes = Files.readAllBytes(Paths.get("/Users/Jacob/Desktop/text.txt"));
+                HashMap<UUID, HashMap<UUID, Vector>> mapp = gson.fromJson(new String(bytes), new TypeToken<HashMap<UUID, HashMap<UUID, Vector>>>() {
+                }.getType());
+                System.out.println(mapp.get(e.getPlayer().getUniqueId()).get(e.getPlayer().getUniqueId()).getZ());
+            } catch (Exception ee) {
+                ee.printStackTrace();
+            }
         }
 
         if (e.getMessage().equals("/spawnPlayer")) {

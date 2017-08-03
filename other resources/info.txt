@@ -10,6 +10,7 @@ CODE RELATED
 - for Spigot web api key - https://github.com/libraryaddict/LibsDisguises/blob/master/src/me/libraryaddict/disguise/utilities/UpdateChecker.java
 - for spigot web api relate - https://www.spigotmc.org/threads/website-api.24008/
 - for spigot web api - https://www.spigotmc.org/threads/the-ultimate-anti-piracy-and-obfuscation-guide.80677/
+- Good obfuscation video - https://www.youtube.com/watch?v=bIREduAAaDY
 
 
 ANTI PIRACY IDEAS

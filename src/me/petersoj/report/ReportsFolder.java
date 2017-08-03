@@ -57,8 +57,10 @@ public class ReportsFolder {
         return null;
     }
 
-    public void addReport(Report report) {
-        reports.add(report);
+    public Report createReport(String reporterName, String reportReason) {
+        Report report = new Report(reports.size(), reporterName, reportReason);
+        this.reports.add(report);
+        return report;
     }
 
     public UUID getPlayerUUID() {

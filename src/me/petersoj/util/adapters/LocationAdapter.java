@@ -13,16 +13,34 @@ import java.text.DecimalFormat;
  */
 public class LocationAdapter implements JsonSerializer<Location>, JsonDeserializer<Location> {
 
+    private boolean minimize;
+    private boolean includeWorlds;
+
+    public LocationAdapter(boolean minimize, boolean includeWorlds) {
+        this.minimize = minimize;
+        this.includeWorlds = includeWorlds;
+    }
+
     @Override
     public JsonElement serialize(Location location, Type type, JsonSerializationContext context) {
-        DecimalFormat decimalFormat = new DecimalFormat("##########0.000"); // We don't need to serialize the entire number.
-
         JsonObject object = new JsonObject();
 
-        object.addProperty("world", location.getWorld().getUID().toString());
-        object.addProperty("x", decimalFormat.format(location.getX()));
-        object.addProperty("y", decimalFormat.format(location.getY()));
-        object.addProperty("z", decimalFormat.format(location.getZ()));
+        if (includeWorlds) {
+            object.addProperty("world", location.getWorld().getUID().toString());
+        }
+
+        if (minimize) {
+            DecimalFormat decimalFormat = new DecimalFormat("##########0.000");
+
+            object.addProperty("x", decimalFormat.format(location.getX()));
+            object.addProperty("y", decimalFormat.format(location.getY()));
+            object.addProperty("z", decimalFormat.format(location.getZ()));
+        } else {
+            object.addProperty("x", location.getX());
+            object.addProperty("y", location.getX());
+            object.addProperty("z", location.getX());
+        }
+
         // Only add if yaw or pitch are not 0 (to save space)
         if (location.getYaw() != 0f) {
             object.addProperty("yaw", location.getYaw());
@@ -41,7 +59,9 @@ public class LocationAdapter implements JsonSerializer<Location>, JsonDeserializ
 
         JsonObject locationObj = (JsonObject) element;
 
-        World world = Bukkit.getWorld(locationObj.get("world").getAsString());
+        JsonElement worldElement = locationObj.get("world");
+        World world = worldElement == null ? null : Bukkit.getWorld(worldElement.getAsString());
+
         double x = locationObj.get("x").getAsDouble();
         double y = locationObj.get("y").getAsDouble();
         double z = locationObj.get("z").getAsDouble();
@@ -52,5 +72,13 @@ public class LocationAdapter implements JsonSerializer<Location>, JsonDeserializ
         float pitch = pitchElement == null ? 0f : pitchElement.getAsFloat();
 
         return new Location(world, x, y, z, yaw, pitch);
+    }
+
+    public boolean isMinimize() {
+        return minimize;
+    }
+
+    public boolean isIncludeWorlds() {
+        return includeWorlds;
     }
 }

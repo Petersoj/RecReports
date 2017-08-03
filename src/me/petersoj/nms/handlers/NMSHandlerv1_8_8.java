@@ -2,8 +2,12 @@ package me.petersoj.nms.handlers;
 
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
+import me.petersoj.RecReportsPlugin;
 import me.petersoj.listeners.events.SignUpdateEvent;
 import me.petersoj.nms.NMSHandler;
+import me.petersoj.nms.RecordedPlayer;
+import me.petersoj.nms.players.RecordedPlayerv1_8_8;
+import me.petersoj.report.ReportPlayer;
 import net.minecraft.server.v1_8_R3.BlockPosition;
 import net.minecraft.server.v1_8_R3.EntityPlayer;
 import net.minecraft.server.v1_8_R3.PacketPlayInUpdateSign;
@@ -12,6 +16,11 @@ import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 public class NMSHandlerv1_8_8 implements NMSHandler {
+
+    @Override
+    public RecordedPlayer getNewRecordedPlayer(RecReportsPlugin plugin, ReportPlayer reportPlayer, Player sendPacketsPlayer) {
+        return new RecordedPlayerv1_8_8(plugin, reportPlayer, sendPacketsPlayer);
+    }
 
     @Override
     public void openSignInterface(Player player, String initialText, String finalText, int delayToFinal) {

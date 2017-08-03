@@ -1,4 +1,4 @@
-package me.petersoj.controller;
+package me.petersoj.view;
 
 /**
  * This controller class represents the view controller when viewing a report.

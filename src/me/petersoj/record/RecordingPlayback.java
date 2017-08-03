@@ -12,6 +12,10 @@ public class RecordingPlayback {
 
     public ArrayList<RecordedPlayer> recordedPlayers;
 
+    public RecordingPlayback() {
+
+    }
+
     public ArrayList<RecordedPlayer> getRecordedPlayers() {
         return recordedPlayers;
     }

@@ -1,19 +1,11 @@
 package me.petersoj.record;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
-import me.petersoj.record.adapters.ReportPlayerIDAdapter;
 import me.petersoj.report.Report;
 import me.petersoj.report.ReportPlayer;
 import me.petersoj.report.ReportsFolder;
-import me.petersoj.util.JsonUtils;
-import me.petersoj.util.adapters.LocationAdapter;
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -22,35 +14,10 @@ import java.util.HashMap;
  */
 public class Frame {
 
-    // Below are the variables for Gson generics to use during [de]serialization
-    private static Type mapReportPlayerLocationType;
-    private static Type arrayListIntegerType;
-    private static Type arrayListReportType;
-    private static Type mapReportPlayerBooleanType;
-    private static Type arrayListReportPlayerType;
-    private static Type mapReportPlayerMapIntegerItemStackType;
-
-    static {
-        // TypeToken has to be anonymous for some speciality.
-        mapReportPlayerLocationType = new TypeToken<HashMap<ReportPlayer, Location>>() {
-        }.getType();
-        arrayListIntegerType = new TypeToken<ArrayList<Integer>>() {
-        }.getType();
-        arrayListReportType = new TypeToken<ArrayList<Report>>() {
-        }.getType();
-        mapReportPlayerBooleanType = new TypeToken<HashMap<ReportPlayer, Boolean>>() {
-        }.getType();
-        arrayListReportPlayerType = new TypeToken<ArrayList<ReportPlayer>>() {
-        }.getType();
-        mapReportPlayerMapIntegerItemStackType = new TypeToken<HashMap<ReportPlayer, HashMap<Integer, ItemStack>>>() {
-        }.getType();
-    }
-
     private ReportsFolder reportsFolder;
 
-    private Gson reportPlayerIDGson;
-
     private HashMap<ReportPlayer, Location> spawnedPlayers;
+    private String reportedPlayerQuitMessage;
     private ArrayList<Integer> despawnedPlayerIDs;
     private ArrayList<Report> reportsInFrame;
     private HashMap<ReportPlayer, Location> playerLocations;
@@ -61,30 +28,8 @@ public class Frame {
     private ArrayList<ReportPlayer> damageAnimations;
     private HashMap<ReportPlayer, HashMap<Integer, ItemStack>> equipmentChanges;
 
-    public Frame(ReportsFolder reportsFolder) {
-        this(reportsFolder, true);
-    }
-
-    public Frame(ReportsFolder reportsFolder, RecordingPlayback recordingPlayback) {
-        this(reportsFolder, false);
-
-        // Create a new Gson for the times when we need only to deserialize the reportPlayerID
-        this.reportPlayerIDGson = new GsonBuilder()
-                .registerTypeAdapter(ReportPlayer.class, new ReportPlayerIDAdapter(recordingPlayback))
-                .registerTypeAdapter(Location.class, new LocationAdapter())
-                .create();
-    }
-
-    private Frame(ReportsFolder reportsFolder, boolean createGson) {
+    private Frame(ReportsFolder reportsFolder) {
         this.reportsFolder = reportsFolder;
-
-        if (createGson) {
-            // Create a new Gson for the times when we need only to serialize the reportPlayerID
-            this.reportPlayerIDGson = new GsonBuilder()
-                    .registerTypeAdapter(ReportPlayer.class, new ReportPlayerIDAdapter())
-                    .registerTypeAdapter(Location.class, new LocationAdapter())
-                    .create();
-        }
 
         this.spawnedPlayers = new HashMap<>();
         this.despawnedPlayerIDs = new ArrayList<>();
@@ -99,58 +44,12 @@ public class Frame {
     }
 
     /**
-     * This method will serialize this frame data into a json string.
-     *
-     * @return a json object string representing this frame
-     */
-    public String serialize() {
-        Gson regularGson = JsonUtils.getGson(); // Used to fully serialize the ReportPlayer Object
-
-        StringBuilder jsonString = new StringBuilder();
-        jsonString.append("["); // Initial frame object array
-
-        if (hasSpawnedPlayers()) {
-            regularGson.toJson(spawnedPlayers, mapReportPlayerLocationType, jsonString);
-        } else if (hasDespawnedPlayers()) {
-            reportPlayerIDGson.toJson(despawnedPlayerIDs, arrayListIntegerType, jsonString);
-        } else if (hasReportsInFrame()) {
-            regularGson.toJson(despawnedPlayerIDs, arrayListIntegerType, jsonString);
-        } else if (hasPlayerLocationChange()) {
-            reportPlayerIDGson.toJson(playerLocations, mapReportPlayerLocationType, jsonString);
-        } else if (hasPlayerWorldChange()) {
-            reportPlayerIDGson.toJson(playerWorldChanges, mapReportPlayerLocationType, jsonString);
-        } else if (hasSneakChange()) {
-
-        } else if (hasOnFireChange()) {
-
-        } else if (hasSwingingArms()) {
-
-        } else if (hasDamageAnimations()) {
-
-        } else if (hasEquipmentChanges()) {
-
-        }
-
-        jsonString.append("]"); // Finish off the array frame object.
-        return "";
-    }
-
-    /**
-     * This method will populate the data members of this frame from
-     * the given JsonObject.
-     *
-     * @param frame the JsonObject representation of a recorded frame.
-     */
-    public void deserialize(JsonObject frame) {
-
-    }
-
-    /**
      * This method is used if the frame object be used for multiple frames
      * rather than being re-instantiated for each frame in a recording.
      */
     public void resetFrame() {
         this.spawnedPlayers.clear();
+        this.reportedPlayerQuitMessage = null;
         this.despawnedPlayerIDs.clear();
         this.reportsInFrame.clear();
         this.playerLocations.clear();
@@ -171,6 +70,10 @@ public class Frame {
 
     public void logSpawnedPlayer(ReportPlayer spawnedPlayer, Location spawnLocation) {
         this.spawnedPlayers.put(spawnedPlayer, spawnLocation);
+    }
+
+    public void logReportedPlayerQuit(String message) {
+        this.reportedPlayerQuitMessage = message;
     }
 
     public void logDespawnedPlayer(int despawnedPlayerID) {
@@ -240,6 +143,10 @@ public class Frame {
         return this.spawnedPlayers.size() > 0;
     }
 
+    public boolean hasReportedPlayerQuitMessage() {
+        return reportedPlayerQuitMessage != null;
+    }
+
     public boolean hasDespawnedPlayers() {
         return this.despawnedPlayerIDs.size() > 0;
     }
@@ -284,6 +191,10 @@ public class Frame {
 
     public HashMap<ReportPlayer, Location> getSpawnedPlayers() {
         return spawnedPlayers;
+    }
+
+    public String getReportedPlayerQuitMessage() {
+        return reportedPlayerQuitMessage;
     }
 
     public ArrayList<Integer> getDespawnedPlayerIDs() {

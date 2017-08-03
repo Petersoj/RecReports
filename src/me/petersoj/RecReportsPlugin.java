@@ -1,9 +1,6 @@
 package me.petersoj;
 
-import me.petersoj.controller.FileController;
-import me.petersoj.controller.RecReportsController;
-import me.petersoj.controller.RecordingController;
-import me.petersoj.controller.ReportsController;
+import me.petersoj.controller.*;
 import me.petersoj.listeners.Commands;
 import me.petersoj.listeners.Listeners;
 import me.petersoj.nms.NMSVersion;
@@ -19,9 +16,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class RecReportsPlugin extends JavaPlugin implements Listener {
 
     private RecReportsController recReportsController;
+    private FileController fileController;
+    private NMSController nmsController;
     private ReportsController reportsController;
     private RecordingController recordingController;
-    private FileController fileController;
 
     private Listeners listeners;
     private Commands commands;
@@ -39,17 +37,18 @@ public class RecReportsPlugin extends JavaPlugin implements Listener {
 
         // Init Controllers
         this.recReportsController = new RecReportsController(this);
-        this.reportsController = new ReportsController();
-        this.recordingController = new RecordingController();
         this.fileController = new FileController(this);
+        this.nmsController = new NMSController(this);
+        this.reportsController = new ReportsController();
+        this.recordingController = new RecordingController(this);
 
         // Init Listening
         this.listeners = new Listeners(this);
         this.commands = new Commands(this);
 
         // Start controllers and listeners
-        this.recReportsController.start();
         this.fileController.start();
+        this.recReportsController.start();
         this.listeners.listen();
     }
 
@@ -102,6 +101,10 @@ public class RecReportsPlugin extends JavaPlugin implements Listener {
 
     public ReportsController getReportsController() {
         return reportsController;
+    }
+
+    public NMSController getNMSController() {
+        return nmsController;
     }
 
     public RecordingController getRecordingController() {

@@ -16,7 +16,6 @@ import java.util.UUID;
  */
 public class FileController {
 
-
     private RecReportsPlugin plugin;
     private File dataFolder;
     private int recordThreshold;
