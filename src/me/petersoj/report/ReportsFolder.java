@@ -33,17 +33,21 @@ public class ReportsFolder {
     }
 
     public void saveData() {
+        JsonUtils.REPORT_PLAYER_ADAPTER.setSerializeFullReportPlayer(true); // Serialize complete object within ReportInfo.
         String infoJson = JsonUtils.getGson().toJson(reportInfo);
         fileController.saveSmallFile(folder, "info.txt", infoJson);
 
+        JsonUtils.REPORT_ADAPTER.setSerializeFullReport(true); // Serialize complete object.
         String reportsJson = JsonUtils.getGson().toJson(reports, reportsListType);
         fileController.saveSmallFile(folder, "reports.txt", reportsJson);
     }
 
     public void readData() {
+        JsonUtils.REPORT_PLAYER_ADAPTER.setDeserializeFromID(null); // Deserialize complete object within ReportInfo.
         String infoJson = fileController.readFileFully(folder, "info.txt");
         this.reportInfo = JsonUtils.getGson().fromJson(infoJson, ReportInfo.class);
 
+        JsonUtils.REPORT_ADAPTER.setDeserializeFromID(null); // Deserialize complete object.
         String reportsJson = fileController.readFileFully(folder, "reports.txt");
         this.reports = JsonUtils.getGson().fromJson(reportsJson, reportsListType);
     }

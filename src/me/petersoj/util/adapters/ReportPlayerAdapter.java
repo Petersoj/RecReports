@@ -9,13 +9,22 @@ import java.lang.reflect.Type;
 
 public class ReportPlayerAdapter implements JsonSerializer<ReportPlayer>, JsonDeserializer<ReportPlayer> {
 
+    private boolean serializeFullReportPlayer;
     private RecordingPlayback deserializerRecordingPlayback;
 
     @Override
     public JsonElement serialize(ReportPlayer reportPlayer, Type type, JsonSerializationContext context) {
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("id", reportPlayer.getPlayerID());
-        return jsonObject;
+        if (reportPlayer == null) {
+            throw new NullPointerException("ReportPlayer cannot be null!");
+        }
+
+        if (serializeFullReportPlayer) {
+            return context.serialize(reportPlayer, type);
+        } else {
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty("pid", reportPlayer.getPlayerID());
+            return jsonObject;
+        }
     }
 
     @Override
@@ -27,10 +36,10 @@ public class ReportPlayerAdapter implements JsonSerializer<ReportPlayer>, JsonDe
             return context.deserialize(jsonElement, type);
         } else {
             JsonObject object = (JsonObject) jsonElement;
-            int id = object.getAsJsonPrimitive("id").getAsInt();
+            int pid = object.getAsJsonPrimitive("pid").getAsInt();
 
             for (RecordedPlayer recordedPlayer : deserializerRecordingPlayback.getRecordedPlayers()) {
-                if (recordedPlayer.getReportPlayer().getPlayerID() == id) {
+                if (recordedPlayer.getReportPlayer().getPlayerID() == pid) {
                     return recordedPlayer.getReportPlayer();
                 }
             }
@@ -39,11 +48,20 @@ public class ReportPlayerAdapter implements JsonSerializer<ReportPlayer>, JsonDe
     }
 
     /**
-     * This method sets whether this instance should deserialize a ReportPlayer from and ID or not.
+     * This sets whether to serialize the entire reportplayer object or to just serialize the ID.
+     *
+     * @param serializeFullReportPlayer whether to serialize the entire reportplayer object
+     */
+    public void setSerializeFullReportPlayer(boolean serializeFullReportPlayer) {
+        this.serializeFullReportPlayer = serializeFullReportPlayer;
+    }
+
+    /**
+     * This method sets whether this instance should deserialize a ReportPlayer from an ID or not.
      *
      * @param deserializerRecordingPlayback null for complete object, object for deserialize from ID
      */
-    public void setRecordingPlaybackInstance(RecordingPlayback deserializerRecordingPlayback) {
+    public void setDeserializeFromID(RecordingPlayback deserializerRecordingPlayback) {
         this.deserializerRecordingPlayback = deserializerRecordingPlayback;
     }
 }

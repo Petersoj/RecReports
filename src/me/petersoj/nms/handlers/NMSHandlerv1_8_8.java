@@ -11,11 +11,19 @@ import me.petersoj.report.ReportPlayer;
 import net.minecraft.server.v1_8_R3.BlockPosition;
 import net.minecraft.server.v1_8_R3.EntityPlayer;
 import net.minecraft.server.v1_8_R3.PacketPlayInUpdateSign;
+import net.minecraft.server.v1_8_R3.PacketPlayOutOpenSignEditor;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.BlockState;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
-public class NMSHandlerv1_8_8 implements NMSHandler {
+public class NMSHandlerv1_8_8 extends NMSHandler {
+
+    public NMSHandlerv1_8_8(RecReportsPlugin plugin) {
+        super(plugin);
+    }
 
     @Override
     public RecordedPlayer getNewRecordedPlayer(RecReportsPlugin plugin, ReportPlayer reportPlayer, Player sendPacketsPlayer) {
@@ -23,8 +31,25 @@ public class NMSHandlerv1_8_8 implements NMSHandler {
     }
 
     @Override
-    public void openSignInterface(Player player, String initialText, String finalText, int delayToFinal) {
+    public void openSignInterface(Player player, String[] initialText, String[] finalText, int delayToFinal) {
+        Location fakeLocation = player.getLocation().subtract(0, Math.random() * 40, 0); // Fake location that player can't see.
 
+        BlockState beforeState = fakeLocation.getBlock().getState();
+        player.sendBlockChange(fakeLocation, Material.SIGN_POST, (byte) 0);
+
+        BlockPosition position = new BlockPosition(fakeLocation.getX(), fakeLocation.getY(), fakeLocation.getZ());
+        PacketPlayOutOpenSignEditor signEditorPacket = new PacketPlayOutOpenSignEditor(position);
+
+        this.getEntityPlayer(player).playerConnection.sendPacket(signEditorPacket);
+
+        player.sendSignChange(fakeLocation, initialText);
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                player.sendSignChange(fakeLocation, finalText);
+                player.sendBlockChange(fakeLocation, beforeState.getType(), beforeState.getRawData());
+            }
+        }.runTaskLater(getPlugin(), delayToFinal);
     }
 
     @Override
@@ -55,5 +80,4 @@ public class NMSHandlerv1_8_8 implements NMSHandler {
     private EntityPlayer getEntityPlayer(Player player) {
         return ((CraftPlayer) player).getHandle();
     }
-
 }

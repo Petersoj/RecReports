@@ -1,9 +1,15 @@
 package me.petersoj.record;
 
+import com.google.gson.Gson;
 import me.petersoj.controller.FileController;
 import me.petersoj.report.ReportPlayer;
 import me.petersoj.report.ReportsFolder;
+import me.petersoj.util.JsonUtils;
 import me.petersoj.util.LogUtils;
+import me.petersoj.util.adapters.LocationAdapter;
+import me.petersoj.util.adapters.ReportAdapter;
+import me.petersoj.util.adapters.ReportPlayerAdapter;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.io.BufferedWriter;
@@ -21,6 +27,7 @@ public class Recorder {
 
     private ReportsFolder reportsFolder;
     private int frameCount;
+    private int emptyFrameCount;
     private Frame currentFrame;
     private Player reportedPlayer;
     private ArrayList<ReportPlayer> otherRecordedPlayers;
@@ -95,8 +102,65 @@ public class Recorder {
         StringBuilder jsonString = new StringBuilder();
         jsonString.append("["); // Don't add comma before because of first frame.
 
-        if (currentFrame.hasSpawnedPlayers()) {
+        Gson gson = JsonUtils.getGson();
 
+        LocationAdapter locationAdapter = JsonUtils.LOCATION_ADAPTER;
+        ReportPlayerAdapter reportPlayerAdapter = JsonUtils.REPORT_PLAYER_ADAPTER;
+        ReportAdapter reportAdapter = JsonUtils.REPORT_ADAPTER;
+
+        // Set adapter serializing techniques
+        locationAdapter.setMinimizeLocation(true);
+        locationAdapter.setIncludeWorlds(true);
+        reportPlayerAdapter.setSerializeFullReportPlayer(true); // Serialize entire ReportPlayer
+        reportAdapter.setSerializeFullReport(false);
+
+        // If statements below check frame data and serialize accordingly.
+
+        if (currentFrame.hasSpawnedPlayers()) {
+            gson.toJson(currentFrame.getSpawnedPlayers(), JsonUtils.MAP_REPORT_PLAYER_LOCATION, jsonString);
+        }
+        if (currentFrame.hasReportedPlayerQuitMessage()) {
+            gson.toJson(currentFrame.getReportedPlayerQuitMessage(), String.class, jsonString);
+        }
+        if (currentFrame.hasDespawnedPlayers()) {
+            gson.toJson(currentFrame.getDespawnedPlayerIDs(), JsonUtils.ARRAYLIST_INTEGER, jsonString);
+        }
+        if (currentFrame.hasReportsInFrame()) {
+            gson.toJson(currentFrame.getReportsInFrame(), JsonUtils.ARRAYLIST_REPORT, jsonString);
+        }
+
+        reportPlayerAdapter.setSerializeFullReportPlayer(false); // ReportPlayer within HashMap should not be serialized for below.
+        locationAdapter.setIncludeWorlds(false); // Worlds should not be serialized for below.
+        if (currentFrame.hasPlayerLocationChange()) {
+            gson.toJson(currentFrame.getPlayerLocations(), JsonUtils.MAP_REPORT_PLAYER_LOCATION, jsonString);
+        }
+
+        locationAdapter.setIncludeWorlds(true); // Worlds should be serialized for below.
+        if (currentFrame.hasReportedPlayerWorldChange()) {
+            gson.toJson(currentFrame.getReportedPlayerWorldChange(), Location.class, jsonString);
+        }
+        if (currentFrame.hasSneakChange()) {
+            gson.toJson(currentFrame.getPlayersSneaking(), JsonUtils.MAP_REPORT_PLAYER_BOOLEAN, jsonString);
+        }
+        if (currentFrame.hasOnFireChange()) {
+            gson.toJson(currentFrame.getPlayersOnFire(), JsonUtils.MAP_REPORT_PLAYER_BOOLEAN, jsonString);
+        }
+        if (currentFrame.hasSwingingArms()) {
+            gson.toJson(currentFrame.getSwingingArms(), JsonUtils.ARRAYLIST_REPORT_PLAYER, jsonString);
+        }
+        if (currentFrame.hasDamageAnimations()) {
+            gson.toJson(currentFrame.getDamageAnimations(), JsonUtils.ARRAYLIST_REPORT_PLAYER, jsonString);
+        }
+        if (currentFrame.hasEquipmentChanges()) {
+            gson.toJson(currentFrame.getEquipmentChanges(), JsonUtils.MAP_EQUIPMENT_TYPE, jsonString);
+        }
+
+        // Handle empty frames.
+        if (jsonString.length() == 1) { // Only character in Appendable is '['
+            this.emptyFrameCount++;
+        } else if (emptyFrameCount > 0 && frameCount == MAX_FRAME_COUNT) { // Add empty if end of recording or there is empty frames.
+            jsonString.append("{\"empty\":").append(emptyFrameCount); // Append empty frame count so the playback knows.
+            this.emptyFrameCount = 0;
         }
 
         jsonString.append("]"); // Finish off the array of objects
@@ -117,5 +181,13 @@ public class Recorder {
         } catch (IOException e) {
             LogUtils.handleError(e, false);
         }
+    }
+
+    public int getFrameCount() {
+        return frameCount;
+    }
+
+    public Frame getCurrentFrame() {
+        return currentFrame;
     }
 }

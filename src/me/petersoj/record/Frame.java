@@ -21,7 +21,7 @@ public class Frame {
     private ArrayList<Integer> despawnedPlayerIDs;
     private ArrayList<Report> reportsInFrame;
     private HashMap<ReportPlayer, Location> playerLocations;
-    private HashMap<ReportPlayer, Location> playerWorldChanges;
+    private Location reportedPlayerWorldChange;
     private HashMap<ReportPlayer, Boolean> playersSneaking;
     private HashMap<ReportPlayer, Boolean> playersOnFire;
     private ArrayList<ReportPlayer> swingingArms;
@@ -35,7 +35,6 @@ public class Frame {
         this.despawnedPlayerIDs = new ArrayList<>();
         this.reportsInFrame = new ArrayList<>();
         this.playerLocations = new HashMap<>();
-        this.playerWorldChanges = new HashMap<>();
         this.playersSneaking = new HashMap<>();
         this.playersOnFire = new HashMap<>();
         this.swingingArms = new ArrayList<>();
@@ -53,7 +52,7 @@ public class Frame {
         this.despawnedPlayerIDs.clear();
         this.reportsInFrame.clear();
         this.playerLocations.clear();
-        this.playerWorldChanges.clear();
+        this.reportedPlayerWorldChange = null;
         this.playersSneaking.clear();
         this.playersOnFire.clear();
         this.swingingArms.clear();
@@ -97,9 +96,8 @@ public class Frame {
         this.playerLocations.put(reportPlayer, locationCopy);
     }
 
-    public void logChangeWorld(ReportPlayer reportPlayer, Location world) {
-        Location locationCopy = new Location(world.getWorld(), world.getX(), world.getY(), world.getZ(), world.getYaw(), world.getPitch());
-        this.playerWorldChanges.put(reportPlayer, locationCopy);
+    public void logReportedPlayerWorldChange(Location worldChange) {
+        this.reportedPlayerWorldChange = worldChange.clone();
     }
 
     public void logSneak(ReportPlayer reportPlayer, boolean sneak) {
@@ -159,8 +157,8 @@ public class Frame {
         return this.playerLocations.size() > 0;
     }
 
-    public boolean hasPlayerWorldChange() {
-        return this.playerWorldChanges.size() > 0;
+    public boolean hasReportedPlayerWorldChange() {
+        return this.reportedPlayerWorldChange != null;
     }
 
     public boolean hasSneakChange() {
@@ -209,8 +207,8 @@ public class Frame {
         return playerLocations;
     }
 
-    public HashMap<ReportPlayer, Location> getPlayerWorldChanges() {
-        return playerWorldChanges;
+    public Location getReportedPlayerWorldChange() {
+        return reportedPlayerWorldChange;
     }
 
     public HashMap<ReportPlayer, Boolean> getPlayersSneaking() {

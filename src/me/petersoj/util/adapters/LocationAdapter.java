@@ -7,22 +7,23 @@ import org.bukkit.World;
 
 import java.lang.reflect.Type;
 import java.text.DecimalFormat;
+import java.util.UUID;
 
 /**
  * This class exists so that org.bukkit.World doesn't get serialized within the Location object.
  */
 public class LocationAdapter implements JsonSerializer<Location>, JsonDeserializer<Location> {
 
-    private boolean minimize;
-    private boolean includeWorlds;
-
-    public LocationAdapter(boolean minimize, boolean includeWorlds) {
-        this.minimize = minimize;
-        this.includeWorlds = includeWorlds;
-    }
+    private boolean minimize = true;
+    private boolean includeWorlds = true;
+    private DecimalFormat decimalFormat = new DecimalFormat("##########0.000");
 
     @Override
     public JsonElement serialize(Location location, Type type, JsonSerializationContext context) {
+        if (location == null) {
+            throw new NullPointerException("Location cannot be null!");
+        }
+
         JsonObject object = new JsonObject();
 
         if (includeWorlds) {
@@ -30,8 +31,6 @@ public class LocationAdapter implements JsonSerializer<Location>, JsonDeserializ
         }
 
         if (minimize) {
-            DecimalFormat decimalFormat = new DecimalFormat("##########0.000");
-
             object.addProperty("x", decimalFormat.format(location.getX()));
             object.addProperty("y", decimalFormat.format(location.getY()));
             object.addProperty("z", decimalFormat.format(location.getZ()));
@@ -60,7 +59,7 @@ public class LocationAdapter implements JsonSerializer<Location>, JsonDeserializ
         JsonObject locationObj = (JsonObject) element;
 
         JsonElement worldElement = locationObj.get("world");
-        World world = worldElement == null ? null : Bukkit.getWorld(worldElement.getAsString());
+        World world = worldElement == null ? null : Bukkit.getWorld(UUID.fromString(worldElement.getAsString()));
 
         double x = locationObj.get("x").getAsDouble();
         double y = locationObj.get("y").getAsDouble();
@@ -74,11 +73,19 @@ public class LocationAdapter implements JsonSerializer<Location>, JsonDeserializ
         return new Location(world, x, y, z, yaw, pitch);
     }
 
-    public boolean isMinimize() {
+    public boolean isMinimizingLocation() {
         return minimize;
     }
 
-    public boolean isIncludeWorlds() {
+    public void setMinimizeLocation(boolean minimize) {
+        this.minimize = minimize;
+    }
+
+    public boolean includesWorlds() {
         return includeWorlds;
+    }
+
+    public void setIncludeWorlds(boolean includeWorlds) {
+        this.includeWorlds = includeWorlds;
     }
 }

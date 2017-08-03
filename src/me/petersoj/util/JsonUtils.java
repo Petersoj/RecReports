@@ -6,6 +6,7 @@ import com.google.gson.reflect.TypeToken;
 import me.petersoj.report.Report;
 import me.petersoj.report.ReportPlayer;
 import me.petersoj.util.adapters.LocationAdapter;
+import me.petersoj.util.adapters.ReportAdapter;
 import me.petersoj.util.adapters.ReportPlayerAdapter;
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
@@ -24,11 +25,12 @@ public class JsonUtils {
     public static final Type ARRAYLIST_REPORT_PLAYER;
     public static final Type MAP_EQUIPMENT_TYPE;
 
-    private static final Gson gson; // So I don't have to create a new Gson instance every time.
-
     // Gson adapter instances
-    private static final LocationAdapter LOCATION_ADAPTER = new LocationAdapter(true, true);
-    private static final ReportPlayerAdapter REPORT_PLAYER_ADAPTER = new ReportPlayerAdapter();
+    public static final LocationAdapter LOCATION_ADAPTER = new LocationAdapter();
+    public static final ReportPlayerAdapter REPORT_PLAYER_ADAPTER = new ReportPlayerAdapter();
+    public static final ReportAdapter REPORT_ADAPTER = new ReportAdapter();
+
+    private static final Gson gson; // So I don't have to create a new Gson instance every time.
 
     static {
         gson = new GsonBuilder()

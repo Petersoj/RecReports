@@ -30,7 +30,7 @@ public abstract class RecordedPlayer {
      * over time, the player will start to get off course and gradually lose it's intended location.
      * IDK, what I'm doing wrong...
      *
-     * @deprecated
+     * @deprecated Issues with accuracy.
      */
     public abstract void moveTo(Location location);
 

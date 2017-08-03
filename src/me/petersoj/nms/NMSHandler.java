@@ -5,12 +5,21 @@ import me.petersoj.listeners.events.SignUpdateEvent;
 import me.petersoj.report.ReportPlayer;
 import org.bukkit.entity.Player;
 
-public interface NMSHandler {
+public abstract class NMSHandler {
 
-    RecordedPlayer getNewRecordedPlayer(RecReportsPlugin plugin, ReportPlayer reportPlayer, Player sendPacketsPlayer);
+    private RecReportsPlugin plugin;
 
-    void openSignInterface(Player player, String initialText, String finalText, int delayToFinal);
+    public NMSHandler(RecReportsPlugin plugin) {
+        this.plugin = plugin;
+    }
 
-    void addSignUpdateListener(Player player, SignUpdateEvent signUpdateEvent);
+    public abstract RecordedPlayer getNewRecordedPlayer(RecReportsPlugin plugin, ReportPlayer reportPlayer, Player sendPacketsPlayer);
 
+    public abstract void openSignInterface(Player player, String[] initialText, String[] finalText, int delayToFinal);
+
+    public abstract void addSignUpdateListener(Player player, SignUpdateEvent signUpdateEvent);
+
+    public RecReportsPlugin getPlugin() {
+        return plugin;
+    }
 }

@@ -20,9 +20,9 @@ public class NMSController {
 
     private void setupNMS() {
         if (NMSVersion.isVersion(NMSVersion.V1_8_8)) {
-            this.nmsHandler = new NMSHandlerv1_8_8();
+            this.nmsHandler = new NMSHandlerv1_8_8(plugin);
         } else if (NMSVersion.isVersion(NMSVersion.V1_12)) {
-            this.nmsHandler = new NMSHandlerv1_12();
+            this.nmsHandler = new NMSHandlerv1_12(plugin);
         }
     }
 

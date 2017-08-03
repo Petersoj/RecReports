@@ -46,5 +46,4 @@ public class LogUtils {
             Bukkit.getLogger().log(Level.INFO, message);
         }
     }
-
 }
