@@ -1,5 +1,6 @@
 package me.petersoj.listeners;
 
+import com.google.common.collect.Maps;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -9,6 +10,7 @@ import me.petersoj.listeners.events.SignUpdateEvent;
 import me.petersoj.nms.players.RecordedPlayerv1_12;
 import me.petersoj.report.ReportPlayer;
 import net.minecraft.server.v1_12_R1.*;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -23,6 +25,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Map;
 
 
 public class Listeners implements Listener, SignUpdateEvent {
@@ -41,6 +44,45 @@ public class Listeners implements Listener, SignUpdateEvent {
     @Override
     public void onSignUpdate(Location location, String[] lines) {
         // Process 'other' report type
+    }
+
+    @SuppressWarnings("unchecked")
+    public void setGlowing(Player glowingPlayer, Player sendPacketPlayer, boolean glow) {
+        try {
+            EntityPlayer entityPlayer = ((CraftPlayer) glowingPlayer).getHandle();
+
+            DataWatcher toCloneDataWatcher = entityPlayer.getDataWatcher();
+            DataWatcher newDataWatcher = new DataWatcher(entityPlayer);
+
+            // The map that stores the DataWatcherItems is private within the DataWatcher Object.
+            // We need to use Reflection to access it from Apache Commons and change it.
+            Map<Integer, DataWatcher.Item<?>> currentMap = (Map<Integer, DataWatcher.Item<?>>) FieldUtils.readDeclaredField(toCloneDataWatcher, "d", true);
+            Map<Integer, DataWatcher.Item<?>> newMap = Maps.newHashMap();
+
+            // We need to clone the DataWatcher.Items because we don't want to point to those values anymore.
+            for (Integer integer : currentMap.keySet()) {
+                newMap.put(integer, currentMap.get(integer).d()); // Puts a copy of the DataWatcher.Item in newMap
+            }
+
+            // Get the 0th index for the BitMask value. http://wiki.vg/Entities#Entity
+            DataWatcher.Item item = newMap.get(0);
+            byte initialBitMask = (Byte) item.b(); // Gets the initial bitmask/byte value so we don't overwrite anything.
+            byte bitMaskIndex = (byte) 6; // The index as specified in wiki.vg/Entities
+            if (glow) {
+                item.a((byte) (initialBitMask | 1 << bitMaskIndex));
+            } else {
+                item.a((byte) (initialBitMask & ~(1 << bitMaskIndex))); // Inverts the specified bit from the index.
+            }
+
+            // Set the newDataWatcher's (unlinked) map data
+            FieldUtils.writeDeclaredField(newDataWatcher, "d", newMap, true);
+
+            PacketPlayOutEntityMetadata metadataPacket = new PacketPlayOutEntityMetadata(glowingPlayer.getEntityId(), newDataWatcher, true);
+
+            ((CraftPlayer) sendPacketPlayer).getHandle().playerConnection.sendPacket(metadataPacket);
+        } catch (IllegalAccessException e) { // Catch statement necessary for FieldUtils.readDeclaredField()
+            e.printStackTrace();
+        }
     }
 
     @EventHandler
@@ -141,15 +183,16 @@ public class Listeners implements Listener, SignUpdateEvent {
             ((CraftPlayer) e.getPlayer()).getHandle().playerConnection.sendPacket(signPacket);
         }
 
-        if (e.getMessage().equals("/book")) {
-            openBook(new ItemStack(Material.BOOK), e.getPlayer());
+        if (e.getMessage().equals("/glow")) {
+//            setGlowing(e.getPlayer(), Bukkit.getPlayer("Mateothebeast97"), !((CraftPlayer) e.getPlayer()).getHandle().glowing);
         }
 
         if (e.getMessage().equals("/spawnPlayer")) {
             String sig = "ItTvKVTrxs7j8HX4BY8ulIQ+y1Y4Aud22XM4TJhbzNEcBLR9gnnBzqs9RC5zZIKHbtQH9HnsFvVwCgQJeLpnyfZlewlkNJB8qrni0Ck3fEbQTgixzSifJSLMuxRJrvl6wxhCtCs3maptEeQMgsNTp9pLbjxlw/vZMKv0qkzcyTygvE4qO49GURW1Up8u3qCsAvvRwPpMqJdqio66yj7jM8sjiDY47F2h/wZfWDTYyuiV0b/DXxOEIXbkabnGiJNH2Y5qM94QYgEjpFXn5H7pLqUnvUkb3C5T83rfvVBrif4JawMccL/ZOAZKtSbK5NHTG9GAqIzB8kZdZ5qNsJINPuP58zEGVGA61qZxlB/uDmF3Wqj3oo93j1HQMQ9mJIMNsCf76RJiJCvPeoPQg16CtJvaJPNmzYdXAz4D7l2ha6z27Ktqx6mCiX6PniLm+32Rxk/fubHTMhSC1PIOT0Gs585Obim8QO3Cz93i7jLCRLZX6QIkxTfhhAl3SFj+4lt+xMPAEFFkFCQPgXFfV2pIBWkABRx4f/Ni24Wdxl8KpyVorxI2cNG4kXiJ5bKBfMGdV/EHLxweyDwwNq0g88EISSOapmgJbUrKRJ1ZA45QSMIgpgRBc4n0CdBqEo2JFv8jVNI6OKwo9zXS/GZJvLEztpK4JeLcGoV8aoiVFQmRESA=";
-            String value = "eyJ0aW1lc3RhbXAiOjE1MDEyNzQ3NzYyMDgsInByb2ZpbGVJZCI6IjRkYmZlZmM4NjJkMDRhNDA4Mzk5YmQyODM3MjUyNjgyIiwicHJvZmlsZU5hbWUiOiJQZXRlcnNv" +
-                    "aiIsInNpZ25hdHVyZVJlcXVpcmVkIjp0cnVlLCJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTllMz"
-                    + "M4ZWZlY2Q4NjlmNmVlMjIzMDVjNTk1MDc1YzFkNTI4NTZhODE3OGE5YjdkNDJmNTNlODk4NzI5NWQifX19";
+            String value = "eyJ0aW1lc3RhbXAiOjE1MDEyNzQ3NzYyMDgsInByb2ZpbGVJZCI6IjRkYmZlZmM4NjJkMDRhNDA4Mzk5YmQyODM3M" +
+                    "jUyNjgyIiwicHJvZmlsZU5hbWUiOiJQZXRlcnNvaiIsInNpZ25hdHVyZVJlcXVpcmVkIjp0cnVlLCJ0ZXh0dXJlcyI6eyJTS0lOIjp7InV" +
+                    "ybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTllMz" +
+                    "M4ZWZlY2Q4NjlmNmVlMjIzMDVjNTk1MDc1YzFkNTI4NTZhODE3OGE5YjdkNDJmNTNlODk4NzI5NWQifX19";
             ReportPlayer reportPlayer = new ReportPlayer(0, e.getPlayer().getUniqueId(), "Petersoj", value, sig);
             RecordedPlayerv1_12 recordedPlayer = new RecordedPlayerv1_12(plugin, reportPlayer, e.getPlayer());
             recordedPlayer.spawn(e.getPlayer().getLocation());
@@ -160,9 +203,13 @@ public class Listeners implements Listener, SignUpdateEvent {
 
                 @Override
                 public void run() {
-                    recordedPlayer.moveTo(e.getPlayer().getLocation().add(1, 0, 0));
+                    recordedPlayer.teleport(e.getPlayer().getLocation().add(1, 0, 0));
+
                     if (index % 20 == 0) {
                         recordedPlayer.teleport(e.getPlayer().getLocation().add(1, 0, 0));
+                        recordedPlayer.setSneaking(true);
+
+
                     }
                     index++;
                 }

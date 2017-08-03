@@ -2,17 +2,15 @@ package me.petersoj.record;
 
 import me.petersoj.controller.FileController;
 import me.petersoj.nms.RecordedPlayer;
-import me.petersoj.report.Report;
 import me.petersoj.report.ReportsFolder;
 import me.petersoj.util.LogUtils;
-import org.bukkit.Location;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
 /**
- * This class is responsible for writing captured/recorded to the disk.
+ * This class is responsible for capturing/recording and writing captured/recorded to the disk.
  */
 public class Recorder {
 
@@ -63,6 +61,10 @@ public class Recorder {
         return false;
     }
 
+    public void captureFrame() {
+
+    }
+
     /**
      * End the current frame/JsonObject and start on with the next frame/JsonObject.
      */
@@ -70,27 +72,7 @@ public class Recorder {
 
     }
 
-    public void logReport(Report report) {
-
-    }
-
-    public void logSpawn(RecordedPlayer recordedPlayer, Location spawnLocation) {
-
-    }
-
-    public void logLook(RecordedPlayer recordedPlayer, float yaw, float pitch) {
-
-    }
-
-    /**
-     * Logs the any type of movement (teleport or regular) because distance check
-     * will be using on RecordingPlayback.
-     */
-    public void logMovement(RecordedPlayer recordedPlayer, Location newLocation) {
-
-    }
-
-    public void logFire(RecordedPlayer recordedPlayer, boolean fire) {
-
+    public ArrayList<RecordedPlayer> getRecordedPlayers() {
+        return recordedPlayers;
     }
 }

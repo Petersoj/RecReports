@@ -27,8 +27,17 @@ public class LogUtils {
     }
 
     public static void logWarn(String message) {
+        logWarn(message, false);
+    }
+
+    public static void logWarn(String message, boolean fatal) {
         if (pluginInstance.getFileController().isLoggingEnabled()) {
             Bukkit.getLogger().log(Level.WARNING, message);
+        }
+
+        if (fatal) {
+            Bukkit.getLogger().log(Level.WARNING, "WARNING WAS FATAL! DISABLING PLUGIN");
+            Bukkit.getPluginManager().disablePlugin(pluginInstance);
         }
     }
 

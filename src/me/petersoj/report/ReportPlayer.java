@@ -36,6 +36,14 @@ public class ReportPlayer {
         return Bukkit.getOfflinePlayer(uuid);
     }
 
+    public int getPlayerID() {
+        return playerID;
+    }
+
+    public void setPlayerID(int playerID) {
+        this.playerID = playerID;
+    }
+
     public UUID getUUID() {
         return uuid;
     }

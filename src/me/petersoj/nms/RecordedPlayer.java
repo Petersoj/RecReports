@@ -25,28 +25,28 @@ public abstract class RecordedPlayer {
 
     public abstract void look(float yaw, float pitch);
 
+    /**
+     * Deprecated because of the loss of accuracy and I'm doing something wrong here, because
+     * over time, the player will start to get off course and gradually lose it's intended location.
+     * IDK, what I'm doing wrong...
+     *
+     * @deprecated
+     */
     public abstract void moveTo(Location location);
 
     public abstract void teleport(Location location);
 
-    public abstract void setSneaking(boolean sneak);
+    public abstract void changeWorld(Location newWorld);
 
-    public abstract void swingArm();
+    public abstract void setSneaking(boolean sneak);
 
     public abstract void setOnFire(boolean onFire);
 
+    public abstract void swingArm();
 
-    public abstract void setMainHandItem(ItemStack item);
+    public abstract void doDamageAnimation();
 
-    public abstract void setOffHandItemv1_12(ItemStack item);
-
-    public abstract void setHelmet(ItemStack item);
-
-    public abstract void setChestplate(ItemStack item);
-
-    public abstract void setLeggings(ItemStack item);
-
-    public abstract void setBoots(ItemStack item);
+    public abstract void setEquipment(int recordedSlotNumber, ItemStack item);
 
     public RecReportsPlugin getPlugin() {
         return plugin;

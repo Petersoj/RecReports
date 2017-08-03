@@ -14,6 +14,11 @@ import org.bukkit.entity.Player;
 public class NMSHandlerv1_12 implements NMSHandler {
 
     @Override
+    public void openSignInterface(Player player, String initialText, String finalText, int delayToFinal) {
+
+    }
+
+    @Override
     public void addSignUpdateListener(Player player, SignUpdateEvent signUpdateEvent) {
         EntityPlayer entityPlayer = getEntityPlayer(player);
         entityPlayer.playerConnection.networkManager.channel.pipeline().addBefore("packet_handler", player.getName(),

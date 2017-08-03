@@ -6,6 +6,7 @@ import me.petersoj.RecReportsPlugin;
 import me.petersoj.nms.RecordedPlayer;
 import me.petersoj.report.ReportPlayer;
 import net.minecraft.server.v1_8_R3.*;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
@@ -14,11 +15,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.Map;
+
 // http://web.archive.org/web/20140910111231/http://wiki.vg/Protocol
 public class RecordedPlayerv1_8_8 extends RecordedPlayer {
 
     private EntityPlayer entityPlayer;
     private EntityPlayer sendPacketsPlayer;
+
+    private Map<Integer, DataWatcher.WatchableObject> dataWatcherMap;
 
     public RecordedPlayerv1_8_8(RecReportsPlugin plugin, ReportPlayer reportPlayer, Player sendPacketsPlayer) {
         super(plugin, reportPlayer, sendPacketsPlayer);
@@ -57,6 +62,7 @@ public class RecordedPlayerv1_8_8 extends RecordedPlayer {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void createEntityPlayer(Location location) {
         MinecraftServer server = MinecraftServer.getServer();
         WorldServer worldServer = ((CraftWorld) location.getWorld()).getHandle();
@@ -73,6 +79,13 @@ public class RecordedPlayerv1_8_8 extends RecordedPlayer {
         this.entityPlayer.locZ = location.getZ();
         this.entityPlayer.yaw = location.getYaw();
         this.entityPlayer.pitch = location.getPitch();
+
+        // Setup Data Watcher
+        try {
+            dataWatcherMap = (Map<Integer, DataWatcher.WatchableObject>) FieldUtils.readDeclaredField(entityPlayer.getDataWatcher(), "d", true);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -90,6 +103,9 @@ public class RecordedPlayerv1_8_8 extends RecordedPlayer {
         // Convert floats to bytes
         byte byteYaw = (byte) ((int) (yaw * 256.0F / 360.0F));
         byte bytePitch = (byte) ((int) (pitch * 256.0F / 360.0F));
+
+        // Set the lastYaw and lastPitch
+        this.entityPlayer.lastYaw = entityPlayer.yaw;
 
         // Set these in EntityPlayer for later use
         this.entityPlayer.yaw = yaw;
@@ -160,11 +176,29 @@ public class RecordedPlayerv1_8_8 extends RecordedPlayer {
 
         PacketPlayOutEntityTeleport teleportPacket = new PacketPlayOutEntityTeleport(entityPlayer);
         this.sendPacket(teleportPacket);
+        this.look(location.getYaw(), location.getPitch());
+    }
+
+    @Override
+    public void changeWorld(Location newWorld) {
+        if (newWorld == null) {
+            throw new NullPointerException("New World Location cannot be null!");
+        }
+
+        this.despawn();
+        this.spawn(newWorld);
     }
 
     @Override
     public void setSneaking(boolean sneak) {
-        entityPlayer.setSneaking(sneak);
+        this.setByteFlag(1, sneak);
+        PacketPlayOutEntityMetadata metadataPacket = new PacketPlayOutEntityMetadata(entityPlayer.getId(), entityPlayer.getDataWatcher(), true);
+        sendPacket(metadataPacket);
+    }
+
+    @Override
+    public void setOnFire(boolean onFire) {
+        this.setByteFlag(0, onFire);
         PacketPlayOutEntityMetadata metadataPacket = new PacketPlayOutEntityMetadata(entityPlayer.getId(), entityPlayer.getDataWatcher(), true);
         sendPacket(metadataPacket);
     }
@@ -176,76 +210,19 @@ public class RecordedPlayerv1_8_8 extends RecordedPlayer {
     }
 
     @Override
-    public void setOnFire(boolean onFire) {
-        // Stolen from Entity.class :)
-        byte b0 = entityPlayer.getDataWatcher().getByte(0);
-        if (onFire) {
-            entityPlayer.getDataWatcher().watch(0, (byte) (b0 | 1 << 0));
-        } else {
-            entityPlayer.getDataWatcher().watch(0, (byte) (b0 & ~(1 << 0)));
-        }
-
-        PacketPlayOutEntityMetadata metadataPacket = new PacketPlayOutEntityMetadata(entityPlayer.getId(), entityPlayer.getDataWatcher(), true);
-        sendPacket(metadataPacket);
+    public void doDamageAnimation() {
+        PacketPlayOutAnimation animationPacket = new PacketPlayOutAnimation(entityPlayer, 1);
+        sendPacket(animationPacket);
     }
 
     @Override
-    public void setMainHandItem(ItemStack item) {
+    public void setEquipment(int recordedSlotNumber, ItemStack item) {
         if (item == null) {
             throw new NullPointerException("The Item cannot be null!");
         }
 
         PacketPlayOutEntityEquipment equipmentPacket =
-                new PacketPlayOutEntityEquipment(entityPlayer.getId(), 0, CraftItemStack.asNMSCopy(item));
-        sendPacket(equipmentPacket);
-    }
-
-    @Override
-    public void setOffHandItemv1_12(ItemStack item) {
-        throw new UnsupportedClassVersionError("Bad version call! 1.8 doesn't have offhands!");
-    }
-
-    @Override
-    public void setHelmet(ItemStack item) {
-        if (item == null) {
-            throw new NullPointerException("The Item cannot be null!");
-        }
-
-        PacketPlayOutEntityEquipment equipmentPacket =
-                new PacketPlayOutEntityEquipment(entityPlayer.getId(), 4, CraftItemStack.asNMSCopy(item));
-        sendPacket(equipmentPacket);
-    }
-
-    @Override
-    public void setChestplate(ItemStack item) {
-        if (item == null) {
-            throw new NullPointerException("The Item cannot be null!");
-        }
-
-        PacketPlayOutEntityEquipment equipmentPacket =
-                new PacketPlayOutEntityEquipment(entityPlayer.getId(), 3, CraftItemStack.asNMSCopy(item));
-        sendPacket(equipmentPacket);
-    }
-
-    @Override
-    public void setLeggings(ItemStack item) {
-        if (item == null) {
-            throw new NullPointerException("The Item cannot be null!");
-        }
-
-        PacketPlayOutEntityEquipment equipmentPacket =
-                new PacketPlayOutEntityEquipment(entityPlayer.getId(), 2, CraftItemStack.asNMSCopy(item));
-        sendPacket(equipmentPacket);
-    }
-
-    @Override
-    public void setBoots(ItemStack item) {
-        if (item == null) {
-            throw new NullPointerException("The Item cannot be null!");
-        }
-
-        PacketPlayOutEntityEquipment equipmentPacket =
-                new PacketPlayOutEntityEquipment(entityPlayer.getId(), 1, CraftItemStack.asNMSCopy(item));
+                new PacketPlayOutEntityEquipment(entityPlayer.getId(), recordedSlotNumber, CraftItemStack.asNMSCopy(item));
         sendPacket(equipmentPacket);
     }
 
@@ -256,6 +233,18 @@ public class RecordedPlayerv1_8_8 extends RecordedPlayer {
 
     private boolean isOnGround() {
         return entityPlayer.locY % 1 == 0;
+    }
+
+    @SuppressWarnings("unchecked")
+    private void setByteFlag(int bitMaskIndex, boolean value) {
+        DataWatcher.WatchableObject item = dataWatcherMap.get(0);
+        byte initialBitMask = (Byte) item.b(); // Gets the initial bitmask/byte value so we don't overwrite anything.
+
+        if (value) {
+            item.a((byte) (initialBitMask | 1 << bitMaskIndex));
+        } else {
+            item.a((byte) (initialBitMask & ~(1 << bitMaskIndex))); // Inverts the specified bit from the index.
+        }
     }
 
     private void sendPacket(Packet packet) {

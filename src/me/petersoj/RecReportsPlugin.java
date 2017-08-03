@@ -6,6 +6,7 @@ import me.petersoj.controller.RecordingController;
 import me.petersoj.controller.ReportsController;
 import me.petersoj.listeners.Commands;
 import me.petersoj.listeners.Listeners;
+import me.petersoj.nms.NMSVersion;
 import me.petersoj.util.LogUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -29,6 +30,10 @@ public class RecReportsPlugin extends JavaPlugin implements Listener {
     public void onEnable() {
         // Set Utils instances up
         LogUtils.setPluginInstance(this);
+
+        if (!NMSVersion.setupVersion()) {
+            return; // Don't do the rest of onEnable()
+        }
 
         Bukkit.getPluginManager().registerEvents(this, this);
 

@@ -5,5 +5,8 @@ import org.bukkit.entity.Player;
 
 public interface NMSHandler {
 
+    void openSignInterface(Player player, String initialText, String finalText, int delayToFinal);
+
     void addSignUpdateListener(Player player, SignUpdateEvent signUpdateEvent);
+
 }

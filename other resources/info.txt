@@ -7,6 +7,10 @@ Stuff to put for Notes section: Bug reports, Suggestions, Support, Before you bu
 
 CODE RELATED
 - for 1.8.8 NPC:  https://pastebin.com/8dn1wAvH
+- for Spigot web api key - https://github.com/libraryaddict/LibsDisguises/blob/master/src/me/libraryaddict/disguise/utilities/UpdateChecker.java
+- for spigot web api relate - https://www.spigotmc.org/threads/website-api.24008/
+- for spigot web api - https://www.spigotmc.org/threads/the-ultimate-anti-piracy-and-obfuscation-guide.80677/
+
 
 ANTI PIRACY IDEAS
 - Of course hardcore obfuscate. especially the spigotmc.org check stuff.
