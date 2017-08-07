@@ -1,6 +1,7 @@
 package me.petersoj.util.adapters;
 
 import com.google.gson.*;
+import me.petersoj.util.LocationUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -14,9 +15,10 @@ import java.util.UUID;
  */
 public class LocationAdapter implements JsonSerializer<Location>, JsonDeserializer<Location> {
 
+    private DecimalFormat decimalFormat = new DecimalFormat("###########.###");
     private boolean minimize = true;
     private boolean includeWorlds = true;
-    private DecimalFormat decimalFormat = new DecimalFormat("##########0.000");
+    private boolean checkMovementType = false;
 
     @Override
     public JsonElement serialize(Location location, Type type, JsonSerializationContext context) {
@@ -30,24 +32,47 @@ public class LocationAdapter implements JsonSerializer<Location>, JsonDeserializ
             object.addProperty("world", location.getWorld().getUID().toString());
         }
 
-        if (minimize) {
-            object.addProperty("x", decimalFormat.format(location.getX()));
-            object.addProperty("y", decimalFormat.format(location.getY()));
-            object.addProperty("z", decimalFormat.format(location.getZ()));
+        boolean addLocation;
+        boolean addDirection;
+
+        if (checkMovementType) {
+            LocationUtils.MovementType movementType = LocationUtils.getMovementType(location);
+            addLocation = (movementType == LocationUtils.MovementType.MOVE || movementType == LocationUtils.MovementType.MOVE_AND_LOOK);
+            addDirection = (movementType == LocationUtils.MovementType.LOOK || movementType == LocationUtils.MovementType.MOVE_AND_LOOK);
         } else {
-            object.addProperty("x", location.getX());
-            object.addProperty("y", location.getX());
-            object.addProperty("z", location.getX());
+            addLocation = true;
+            addDirection = true;
         }
 
-        // Only add if yaw or pitch are not 0 (to save space)
-        if (location.getYaw() != 0f) {
-            object.addProperty("yaw", location.getYaw());
-        } else if (location.getPitch() != 0f) {
-            object.addProperty("pitch", location.getPitch());
+        if (addLocation) {
+            this.addNumberProperty(object, "x", location.getX());
+            this.addNumberProperty(object, "y", location.getY());
+            this.addNumberProperty(object, "z", location.getZ());
+        }
+        if (addDirection) {
+            if (checkMovementType) {
+                this.addNumberProperty(object, "yaw", location.getYaw());
+                this.addNumberProperty(object, "pitch", location.getPitch());
+            } else if (addLocation) { // Make sure to only do below if X, Y, Z are going to be serialized as well.
+                // Only add if yaw or pitch are not 0 (to save space) and we don't need to check movement type
+                if (location.getYaw() != 0f) {
+                    this.addNumberProperty(object, "yaw", location.getYaw());
+                }
+                if (location.getPitch() != 0f) {
+                    this.addNumberProperty(object, "pitch", location.getPitch());
+                }
+            }
         }
 
         return object;
+    }
+
+    private void addNumberProperty(JsonObject object, String key, Number value) {
+        if (minimize) {
+            object.addProperty(key, decimalFormat.format(value));
+        } else {
+            object.addProperty(key, value);
+        }
     }
 
     @Override
@@ -59,33 +84,34 @@ public class LocationAdapter implements JsonSerializer<Location>, JsonDeserializ
         JsonObject locationObj = (JsonObject) element;
 
         JsonElement worldElement = locationObj.get("world");
-        World world = worldElement == null ? null : Bukkit.getWorld(UUID.fromString(worldElement.getAsString()));
-
-        double x = locationObj.get("x").getAsDouble();
-        double y = locationObj.get("y").getAsDouble();
-        double z = locationObj.get("z").getAsDouble();
-
+        JsonElement xElement = locationObj.get("x");
+        JsonElement yElement = locationObj.get("y");
+        JsonElement zElement = locationObj.get("z");
         JsonElement yawElement = locationObj.get("yaw");
         JsonElement pitchElement = locationObj.get("pitch");
-        float yaw = yawElement == null ? 0f : yawElement.getAsFloat();
-        float pitch = pitchElement == null ? 0f : pitchElement.getAsFloat();
+
+        World world = worldElement == null ? null : Bukkit.getWorld(UUID.fromString(worldElement.getAsString()));
+        double x = xElement == null ? (checkMovementType ? LocationUtils.LOOK_LOCATION_EXAMPLE.getX() : 0) : xElement.getAsDouble();
+        double y = yElement == null ? (checkMovementType ? LocationUtils.LOOK_LOCATION_EXAMPLE.getY() : 0) : yElement.getAsDouble();
+        double z = zElement == null ? (checkMovementType ? LocationUtils.LOOK_LOCATION_EXAMPLE.getZ() : 0) : zElement.getAsDouble();
+        float yaw = yawElement == null ? (checkMovementType ? LocationUtils.MOVE_LOCATION_EXAMPLE.getYaw() : 0f) : yawElement.getAsFloat();
+        float pitch = pitchElement == null ? (checkMovementType ? LocationUtils.MOVE_LOCATION_EXAMPLE.getYaw() : 0f) : pitchElement.getAsFloat();
 
         return new Location(world, x, y, z, yaw, pitch);
     }
 
-    public boolean isMinimizingLocation() {
-        return minimize;
-    }
-
-    public void setMinimizeLocation(boolean minimize) {
+    // synchronized just in case multiple threads need to change this when using Gson
+    public synchronized void setMinimizeLocation(boolean minimize) {
         this.minimize = minimize;
     }
 
-    public boolean includesWorlds() {
-        return includeWorlds;
+    // synchronized just in case multiple threads need to change this when using Gson
+    public synchronized void setIncludeWorlds(boolean includeWorlds) {
+        this.includeWorlds = includeWorlds;
     }
 
-    public void setIncludeWorlds(boolean includeWorlds) {
-        this.includeWorlds = includeWorlds;
+    // synchronized just in case multiple threads need to change this when using Gson
+    public synchronized void setCheckMovementType(boolean check) {
+        this.checkMovementType = check;
     }
 }

@@ -1,6 +1,6 @@
 package me.petersoj.nms;
 
-import me.petersoj.util.LogUtils;
+import me.petersoj.util.DebugUtils;
 import org.bukkit.Bukkit;
 
 public class NMSVersion {
@@ -23,8 +23,8 @@ public class NMSVersion {
         } else if (bukkitVersion.contains("1.12")) {
             version = V1_12;
         } else {
-            LogUtils.logWarn("YOU MUST USE 1.8.8 OR 1.12");
-            LogUtils.logWarn("Bad version Error", true);
+            DebugUtils.logWarn("YOU MUST USE 1.8.8 OR 1.12");
+            DebugUtils.logWarn("Bad version Error", true);
             return false;
         }
         return true;

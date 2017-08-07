@@ -2,7 +2,7 @@ package me.petersoj.controller;
 
 import me.petersoj.RecReportsPlugin;
 import me.petersoj.report.ReportsFolder;
-import me.petersoj.util.LogUtils;
+import me.petersoj.util.DebugUtils;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.io.*;
@@ -51,14 +51,14 @@ public class FileController {
         this.dataFolder = new File(plugin.getDataFolder(), "/ReportData");
 
         if (!dataFolder.mkdir() && !dataFolder.exists()) { // If the directory wasn't made at all.
-            LogUtils.handleError(new IOException("The Report Data folder could not be created!"), true);
+            DebugUtils.handleError(new IOException("The Report Data folder could not be created!"), true);
         }
     }
 
     public ReportsFolder getReportsFolder(UUID playerUUID) {
         File reportFile = new File(dataFolder, playerUUID.toString());
         if (!reportFile.mkdir() && !reportFile.exists()) { // If the directory wasn't made at all.
-            LogUtils.handleError(new IOException("The Report File could not be created!"), false);
+            DebugUtils.handleError(new IOException("The Report File could not be created!"), false);
         }
         return new ReportsFolder(this, playerUUID, reportFile);
     }
@@ -71,7 +71,7 @@ public class FileController {
         try {
             Files.write(pathToFile.toPath(), contents.getBytes("UTF-8")); // Default OpenOptions are perfect here
         } catch (IOException e) {
-            LogUtils.handleError(e, false);
+            DebugUtils.handleError(e, false);
         }
     }
 
@@ -85,7 +85,7 @@ public class FileController {
             byte[] fileBytes = Files.readAllBytes(pathToFile.toPath());
             contents = new String(fileBytes);
         } catch (IOException e) {
-            LogUtils.handleError(e, false);
+            DebugUtils.handleError(e, false);
         }
         return contents;
     }
@@ -98,7 +98,7 @@ public class FileController {
         try {
             return new BufferedWriter(new OutputStreamWriter(new FileOutputStream(pathToFile), "UTF-8")); // default buffer size if good.
         } catch (IOException e) {
-            LogUtils.handleError(e, false);
+            DebugUtils.handleError(e, false);
         }
         return null;
     }

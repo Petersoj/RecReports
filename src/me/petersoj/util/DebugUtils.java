@@ -5,7 +5,7 @@ import org.bukkit.Bukkit;
 
 import java.util.logging.Level;
 
-public class LogUtils {
+public class DebugUtils {
 
     private static RecReportsPlugin pluginInstance;
 

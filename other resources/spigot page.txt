@@ -1,0 +1,42 @@
+[CENTER][IMG]http://i.imgur.com/VJK53OV.png[/IMG]
+
+[FONT=Verdana][I]RecReports[/I] is the ultimate player recording and reporting plugin that can prevent all type of hacking and behavior. It will help strengthen your community and staff members and improve your Minecraft server exponentially, while getting hackers and other ill-intentioned players banned. [I]There is no other Anti-cheat like this one[/I]. RecReports is a MUST have for any server.
+
+[IMG]http://i.imgur.com/Czxt4po.png[/IMG]
+
+This plugin, at its core, simply records player movement and actions when other players on the server report a user, using the "/report" command, and will playback the recording on-demand when a moderator or staff member wants to view it. The playback interface is intuitive and has many controls such as: play/pause, move 10 seconds forward or back, ban the player on the spot, mark for further review, and more. This plugins also contains lots of configuration to tune this plugin to you and your servers' liking.
+
+[IMG]http://i.imgur.com/bxEGTB8.png[/IMG]
+
+[MEDIA=youtube]q7Gh_-KDXAk[/MEDIA]
+
+[IMG]http://i.imgur.com/pU4eznV.png[/IMG]
+
+Here
+
+[IMG]http://i.imgur.com/aAmLyWT.png[/IMG]
+
+Here
+
+[IMG]http://i.imgur.com/6Z4b87X.png[/IMG]
+[COLOR=#ff0000][B][U]MUST READ BEFORE YOU BUY![/U][/B][/COLOR][/CENTER]
+[B]This plugin is [U]ONLY[/U] for Minecraft server versions: [I]1.8.8, 1.12, 1.12.1[/I][/B]
+[B]If you would like this plugin for another version, please use the suggestions link below.[/B]
+
+[B]Bugs/Errors/Suggestions[/B]: PLEASE, do not put bugs/errors in the ratings section. Please use [B][URL='https://bitbucket.org/Petersoj/recreports-issues-suggestions/issues/new']THIS[/URL][/B] link to submit your Bugs/errors/suggestions. Thanks!
+
+[B]Support:[/B] For any support needed on this plugin, feel free to shoot me a Private Message on spigot [I][URL='https://www.spigotmc.org/conversations/add?to=Petersoj']here[/URL][/I]. I will not give you support feedback in the reviews section.
+
+[B]By buying this plugin, you agree to these terms:[/B]
+[LIST]
+[*][I]You are not permitted to (re)distribute, decompile, modify, or claim this plugin in any way.[/I]
+[*][I]Refunds will only be given upon certain circumstances.[/I]
+[*][I]I reserve the right to modify these terms and you agree to the latest changes.[/I]
+[*][I]You have read these Notes completely and comply with them.[/I]
+[/LIST]
+
+[CENTER][IMG]http://i.imgur.com/PjUFCT3.png[/IMG]
+
+Here
+
+[/FONT][/CENTER]

@@ -192,15 +192,19 @@ public class Listeners implements Listener, SignUpdateEvent {
         }
 
         if (e.getMessage().equals("/glow")) {
-//            setGlowing(e.getPlayer(), Bukkit.getPlayer("Mateothebeast97"), !((CraftPlayer) e.getPlayer()).getHandle().glowing);
-            Gson gson = new GsonBuilder().create();
-            HashMap<UUID, HashMap<UUID, Vector>> map = new HashMap<>();
+            setGlowing(e.getPlayer(), Bukkit.getPlayer("Mateothebeast97"), !((CraftPlayer) e.getPlayer()).getHandle().glowing);
+        }
 
-            HashMap<UUID, Vector> otherMap = new HashMap<>();
-            otherMap.put(e.getPlayer().getUniqueId(), new Vector(2, 2, 300000));
+        if (e.getMessage().equals("/testGson")) {
+            Gson gson = new GsonBuilder().create();
+            HashMap<UUID, HashMap<String, Vector>> map = new HashMap<>();
+
+            HashMap<String, Vector> otherMap = new HashMap<>();
+            otherMap.put("hey there", new Vector(2, 2, 300000));
+
+            map.put(UUID.fromString("675c8d83-fbe5-4824-832c-6cadb2ed448d"), new HashMap<>());
 
             map.put(e.getPlayer().getUniqueId(), otherMap);
-            map.put(UUID.fromString("675c8d83-fbe5-4824-832c-6cadb2ed448d"), otherMap);
 
             try {
                 Files.write(Paths.get("/Users/Jacob/Desktop/text.txt"), gson.toJson(map).getBytes());
@@ -211,9 +215,11 @@ public class Listeners implements Listener, SignUpdateEvent {
 
             try {
                 byte[] bytes = Files.readAllBytes(Paths.get("/Users/Jacob/Desktop/text.txt"));
-                HashMap<UUID, HashMap<UUID, Vector>> mapp = gson.fromJson(new String(bytes), new TypeToken<HashMap<UUID, HashMap<UUID, Vector>>>() {
-                }.getType());
-                System.out.println(mapp.get(e.getPlayer().getUniqueId()).get(e.getPlayer().getUniqueId()).getZ());
+                HashMap<UUID, HashMap<String, Vector>> mapp = gson.fromJson(new String(bytes),
+                        new TypeToken<HashMap<UUID, HashMap<String, Vector>>>() {
+                        }.getType());
+
+                System.out.println(mapp.get(e.getPlayer().getUniqueId()).get("hey there").getZ());
             } catch (Exception ee) {
                 ee.printStackTrace();
             }

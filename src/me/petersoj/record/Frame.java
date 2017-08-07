@@ -2,7 +2,7 @@ package me.petersoj.record;
 
 import me.petersoj.report.Report;
 import me.petersoj.report.ReportPlayer;
-import me.petersoj.report.ReportsFolder;
+import me.petersoj.util.LocationUtils;
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 
@@ -13,8 +13,6 @@ import java.util.HashMap;
  * This class represents a frame in a recording.
  */
 public class Frame {
-
-    private ReportsFolder reportsFolder;
 
     private HashMap<ReportPlayer, Location> spawnedPlayers;
     private String reportedPlayerQuitMessage;
@@ -28,9 +26,7 @@ public class Frame {
     private ArrayList<ReportPlayer> damageAnimations;
     private HashMap<ReportPlayer, HashMap<Integer, ItemStack>> equipmentChanges;
 
-    private Frame(ReportsFolder reportsFolder) {
-        this.reportsFolder = reportsFolder;
-
+    public Frame() {
         this.spawnedPlayers = new HashMap<>();
         this.despawnedPlayerIDs = new ArrayList<>();
         this.reportsInFrame = new ArrayList<>();
@@ -84,15 +80,22 @@ public class Frame {
     }
 
     public void logLook(ReportPlayer reportPlayer, float yaw, float pitch) {
-        this.playerLocations.put(reportPlayer, createLookLocation(yaw, pitch));
+        Location lookLocation = LocationUtils.LOOK_LOCATION_EXAMPLE.clone();
+        lookLocation.setYaw(yaw);
+        lookLocation.setPitch(pitch);
+        this.playerLocations.put(reportPlayer, lookLocation);
     }
 
     public void logMove(ReportPlayer reportPlayer, double x, double y, double z) {
-        this.playerLocations.put(reportPlayer, createMoveLocaiton(x, y, z));
+        Location moveLocation = LocationUtils.MOVE_LOCATION_EXAMPLE.clone();
+        moveLocation.setX(x);
+        moveLocation.setY(y);
+        moveLocation.setZ(z);
+        this.playerLocations.put(reportPlayer, moveLocation);
     }
 
     public void logMoveAndLook(ReportPlayer reportPlayer, Location location) {
-        Location locationCopy = new Location(null, location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
+        Location locationCopy = location.clone();
         this.playerLocations.put(reportPlayer, locationCopy);
     }
 
@@ -229,33 +232,5 @@ public class Frame {
 
     public HashMap<ReportPlayer, HashMap<Integer, ItemStack>> getEquipmentChanges() {
         return equipmentChanges;
-    }
-
-    /**
-     * This method gets
-     *
-     * @param location the location to check.
-     * @return the type of movement
-     */
-    public MovementType getMovementType(Location location) {
-        if (location == null) {
-            throw new NullPointerException("The Location cannot be null!");
-        }
-
-        if ((int) location.getX() == Integer.MIN_VALUE && location.getY() == 0 && location.getZ() == 0) {
-            return MovementType.LOOK;
-        } else if (location.getYaw() == 360f && location.getPitch() == 360f) {
-            return MovementType.MOVE;
-        } else {
-            return MovementType.MOVE_AND_LOOK;
-        }
-    }
-
-    private Location createLookLocation(float yaw, float pitch) {
-        return new Location(null, Integer.MIN_VALUE, 0, 0, yaw, pitch);
-    }
-
-    private Location createMoveLocaiton(double x, double y, double z) {
-        return new Location(null, x, y, z, 360f, 360f);
     }
 }

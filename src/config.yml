@@ -28,7 +28,8 @@ ban-threshold: 15
 # If a player is reported while their actions are being recorded,
 # then the report is accounted for, and the recording will still proceed.
 # This higher this number, then the more space on disk will be taken up
-# for each recording.
+# for each recording. Also, the higher the number, then the higher the
+# chance an individual recording will become corrupt if you server crashes.
 # 5 minutes is a good default value.
 recording-time: 5
 

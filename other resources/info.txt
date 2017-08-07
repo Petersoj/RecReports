@@ -5,6 +5,9 @@ Small font = 72 pt
 
 Stuff to put for Notes section: Bug reports, Suggestions, Support, Before you buy
 
+ISSUES/SUGGESTIONS PAGE: https://bitbucket.org/Petersoj/recreports-issues-suggestions/issues/new
+ALL IMAGES FOR SPIGOT PAGE: http://imgur.com/a/5r7Ia  (smaller RecReports) > http://i.imgur.com/VJK53OV.png
+
 CODE RELATED
 - for 1.8.8 NPC:  https://pastebin.com/8dn1wAvH
 - for Spigot web api key - https://github.com/libraryaddict/LibsDisguises/blob/master/src/me/libraryaddict/disguise/utilities/UpdateChecker.java

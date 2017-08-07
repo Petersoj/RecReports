@@ -52,7 +52,8 @@ public class ReportPlayerAdapter implements JsonSerializer<ReportPlayer>, JsonDe
      *
      * @param serializeFullReportPlayer whether to serialize the entire reportplayer object
      */
-    public void setSerializeFullReportPlayer(boolean serializeFullReportPlayer) {
+    // synchronized just in case multiple threads need to change this when using Gson
+    public synchronized void setSerializeFullReportPlayer(boolean serializeFullReportPlayer) {
         this.serializeFullReportPlayer = serializeFullReportPlayer;
     }
 
@@ -61,7 +62,8 @@ public class ReportPlayerAdapter implements JsonSerializer<ReportPlayer>, JsonDe
      *
      * @param deserializerRecordingPlayback null for complete object, object for deserialize from ID
      */
-    public void setDeserializeFromID(RecordingPlayback deserializerRecordingPlayback) {
+    // synchronized just in case multiple threads need to change this when using Gson
+    public synchronized void setDeserializeFromID(RecordingPlayback deserializerRecordingPlayback) {
         this.deserializerRecordingPlayback = deserializerRecordingPlayback;
     }
 }

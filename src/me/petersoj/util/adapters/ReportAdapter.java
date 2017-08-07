@@ -46,7 +46,8 @@ public class ReportAdapter implements JsonSerializer<Report>, JsonDeserializer<R
      *
      * @param serializeFullReport whether to serialize the entire Report object
      */
-    public void setSerializeFullReport(boolean serializeFullReport) {
+    // synchronized just in case multiple threads need to change this when using Gson
+    public synchronized void setSerializeFullReport(boolean serializeFullReport) {
         this.serializeFullReport = serializeFullReport;
     }
 
@@ -55,7 +56,8 @@ public class ReportAdapter implements JsonSerializer<Report>, JsonDeserializer<R
      *
      * @param reportsFolder null for complete object, object for deserialize from ID
      */
-    public void setDeserializeFromID(ReportsFolder reportsFolder) {
+    // synchronized just in case multiple threads need to change this when using Gson
+    public synchronized void setDeserializeFromID(ReportsFolder reportsFolder) {
         this.reportsFolder = reportsFolder;
     }
 }
