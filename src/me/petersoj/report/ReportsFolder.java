@@ -1,11 +1,9 @@
 package me.petersoj.report;
 
-import com.google.gson.reflect.TypeToken;
 import me.petersoj.controller.FileController;
 import me.petersoj.util.JsonUtils;
 
 import java.io.File;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -21,35 +19,35 @@ public class ReportsFolder {
     private File folder; // A reference to this ReportsFolder in the file system.
     private ReportInfo reportInfo; // Info data stored in info.txt
     private ArrayList<Report> reports; // Reports stored in reports.txt
-    private Type reportsListType; // Needed for Gson [de]serializing.
 
     public ReportsFolder(FileController fileController, UUID playerUUID, File folder) {
         this.fileController = fileController;
         this.playerUUID = playerUUID;
         this.folder = folder;
-
-        this.reportsListType = new TypeToken<ArrayList<Report>>() {
-        }.getType(); // Anonymous for some speciality.
     }
 
     public void saveData() {
+        JsonUtils.SERIALIZATION_EXCLUSION_STRATEGY.setExclusionChecking(false); // No need to check recording fields for this data.
+
         JsonUtils.REPORT_PLAYER_ADAPTER.setSerializeFullReportPlayer(true); // Serialize complete object within ReportInfo.
         String infoJson = JsonUtils.getGson().toJson(reportInfo);
         fileController.saveSmallFile(folder, "info.txt", infoJson);
 
         JsonUtils.REPORT_ADAPTER.setSerializeFullReport(true); // Serialize complete object.
-        String reportsJson = JsonUtils.getGson().toJson(reports, reportsListType);
+        String reportsJson = JsonUtils.getGson().toJson(reports, JsonUtils.ARRAYLIST_REPORT);
         fileController.saveSmallFile(folder, "reports.txt", reportsJson);
     }
 
     public void readData() {
+        JsonUtils.DESERIALIZATION_EXCLUSION_STRATEGY.setExclusionChecking(false); // No need to check recording fields for this data.
+
         JsonUtils.REPORT_PLAYER_ADAPTER.setDeserializeFromID(null); // Deserialize complete object within ReportInfo.
         String infoJson = fileController.readFileFully(folder, "info.txt");
         this.reportInfo = JsonUtils.getGson().fromJson(infoJson, ReportInfo.class);
 
         JsonUtils.REPORT_ADAPTER.setDeserializeFromID(null); // Deserialize complete object.
         String reportsJson = fileController.readFileFully(folder, "reports.txt");
-        this.reports = JsonUtils.getGson().fromJson(reportsJson, reportsListType);
+        this.reports = JsonUtils.getGson().fromJson(reportsJson, JsonUtils.ARRAYLIST_REPORT);
     }
 
     public Report getReportByID(int reportID) {

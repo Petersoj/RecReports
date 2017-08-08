@@ -32,6 +32,7 @@ import org.bukkit.util.Vector;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -125,7 +126,7 @@ public class Listeners implements Listener, SignUpdateEvent {
 //                    for (PacketPlayOutPosition.EnumPlayerTeleportFlags flag : set) {
 //                        System.out.println(flag.toString());
 //                    }
-//                    System.out.println(ReflectionUtils.getInt(packetPlayOutPosition, "g"));
+//                    System.out.println(ReflectionUtils.getInt(packetPlayOutPosition, "gson"));
                 }
 //                if (msg instanceof PacketPlayOutEntity.PacketPlayOutRelEntityMove) {
 //                    System.out.println("PacketPlayOutRelEntityMove");
@@ -250,6 +251,26 @@ public class Listeners implements Listener, SignUpdateEvent {
             } catch (Exception ee) {
                 ee.printStackTrace();
             }
+        }
+
+        if (e.getMessage().equals("/testFrameGson")) {
+            long time = System.currentTimeMillis();
+            Gson gson = new Gson();
+            ArrayList<ReportInfo> infos = new ArrayList<>();
+            for (int i = 0; i < 100; i++) {
+                ReportInfo info = new ReportInfo();
+                info.getReportedPlayer().setUUID(UUID.fromString("4dbfefc8-62d0-4a40-8399-bd2837252682"));
+                infos.add(info);
+            }
+            String string = gson.toJson(infos, new TypeToken<ArrayList<ReportInfo>>() {
+            }.getType());
+            System.out.println(string.length());
+            System.out.println(System.currentTimeMillis() - time);
+
+            long time2 = System.currentTimeMillis();
+            infos = gson.fromJson(string, new TypeToken<ArrayList<ReportInfo>>() {
+            }.getType());
+            System.out.println(System.currentTimeMillis() - time2);
         }
 
         if (e.getMessage().equals("/spawnPlayer")) {

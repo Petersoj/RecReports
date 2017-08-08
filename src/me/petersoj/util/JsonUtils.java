@@ -6,9 +6,9 @@ import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import me.petersoj.report.Report;
 import me.petersoj.report.ReportPlayer;
-import me.petersoj.util.adapters.LocationAdapter;
-import me.petersoj.util.adapters.ReportAdapter;
-import me.petersoj.util.adapters.ReportPlayerAdapter;
+import me.petersoj.util.gson.adapters.*;
+import me.petersoj.util.gson.hooks.DeserializationExclusionStrategy;
+import me.petersoj.util.gson.hooks.SerializationExclusionStrategy;
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 
@@ -31,14 +31,23 @@ public class JsonUtils {
     public static final ReportPlayerAdapter REPORT_PLAYER_ADAPTER = new ReportPlayerAdapter();
     public static final ReportAdapter REPORT_ADAPTER = new ReportAdapter();
 
+    // Gson Exclusion hooks
+    public static final SerializationExclusionStrategy SERIALIZATION_EXCLUSION_STRATEGY = new SerializationExclusionStrategy();
+    public static final DeserializationExclusionStrategy DESERIALIZATION_EXCLUSION_STRATEGY = new DeserializationExclusionStrategy();
+
     private static final Gson gson; // So I don't have to create a new Gson instance every time.
     private static final JsonParser jsonParser = new JsonParser(); // So I don't have to create a new JsonParser instance every time.
 
     static {
         gson = new GsonBuilder()
+                .disableHtmlEscaping()
                 .registerTypeAdapter(Location.class, LOCATION_ADAPTER)
                 .registerTypeAdapter(ReportPlayer.class, REPORT_PLAYER_ADAPTER)
                 .registerTypeAdapter(Report.class, REPORT_ADAPTER)
+                .registerTypeAdapter(ArrayList.class, new EmptyArrayListAdapter())
+                .registerTypeAdapter(HashMap.class, new EmptyHashMapAdapter())
+                .addSerializationExclusionStrategy(SERIALIZATION_EXCLUSION_STRATEGY)
+                .addDeserializationExclusionStrategy(DESERIALIZATION_EXCLUSION_STRATEGY)
                 .create();
 
         // TypeToken has to be anonymous for some speciality.

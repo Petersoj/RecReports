@@ -1,7 +1,5 @@
 package me.petersoj.record;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParseException;
 import me.petersoj.controller.FileController;
@@ -9,9 +7,6 @@ import me.petersoj.nms.RecordedPlayer;
 import me.petersoj.report.ReportsFolder;
 import me.petersoj.util.DebugUtils;
 import me.petersoj.util.JsonUtils;
-import me.petersoj.util.adapters.LocationAdapter;
-import me.petersoj.util.adapters.ReportAdapter;
-import me.petersoj.util.adapters.ReportPlayerAdapter;
 
 import java.util.ArrayList;
 
@@ -26,10 +21,6 @@ public class RecordingPlayback {
     private ReportsFolder reportsFolder;
     private JsonArray recordingArray;
     private Frame currentFrame;
-    private Gson gson = JsonUtils.getGson();
-    private LocationAdapter locationAdapter = JsonUtils.LOCATION_ADAPTER;
-    private ReportPlayerAdapter reportPlayerAdapter = JsonUtils.REPORT_PLAYER_ADAPTER;
-    private ReportAdapter reportAdapter = JsonUtils.REPORT_ADAPTER;
     private ArrayList<RecordedPlayer> recordedPlayers;
 
     public RecordingPlayback(FileController fileController, ReportsFolder reportsFolder) {
@@ -80,9 +71,7 @@ public class RecordingPlayback {
      */
     private void deserializeFrame(int frameIndex) {
         JsonArray frameArray = recordingArray.get(frameIndex).getAsJsonArray();
-//        for (JsonElement element : frameArray) {
-//            JsonObject frameData = element.getAsJsonObject();
-//        }
+
     }
 
     public ArrayList<RecordedPlayer> getRecordedPlayers() {

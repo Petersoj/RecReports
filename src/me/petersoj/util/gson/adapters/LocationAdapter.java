@@ -1,4 +1,4 @@
-package me.petersoj.util.adapters;
+package me.petersoj.util.gson.adapters;
 
 import com.google.gson.*;
 import me.petersoj.util.LocationUtils;
@@ -16,7 +16,7 @@ import java.util.UUID;
 public class LocationAdapter implements JsonSerializer<Location>, JsonDeserializer<Location> {
 
     private DecimalFormat decimalFormat = new DecimalFormat("###########.###");
-    private boolean minimize = true;
+    //    private boolean minimize = true;
     private boolean includeWorlds = true;
     private boolean checkMovementType = false;
 
@@ -68,11 +68,13 @@ public class LocationAdapter implements JsonSerializer<Location>, JsonDeserializ
     }
 
     private void addNumberProperty(JsonObject object, String key, Number value) {
-        if (minimize) {
-            object.addProperty(key, decimalFormat.format(value));
-        } else {
-            object.addProperty(key, value);
-        }
+        object.addProperty(key, decimalFormat.format(value));
+        
+//        if (minimize) {
+//            object.addProperty(key, decimalFormat.format(value));
+//        } else {
+//            object.addProperty(key, value);
+//        }
     }
 
     @Override
@@ -100,10 +102,10 @@ public class LocationAdapter implements JsonSerializer<Location>, JsonDeserializ
         return new Location(world, x, y, z, yaw, pitch);
     }
 
-    // synchronized just in case multiple threads need to change this when using Gson
-    public synchronized void setMinimizeLocation(boolean minimize) {
-        this.minimize = minimize;
-    }
+//    // synchronized just in case multiple threads need to change this when using Gson
+//    public synchronized void setMinimizeLocation(boolean minimize) {
+//        this.minimize = minimize;
+//    }
 
     // synchronized just in case multiple threads need to change this when using Gson
     public synchronized void setIncludeWorlds(boolean includeWorlds) {

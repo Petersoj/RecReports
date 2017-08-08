@@ -1,4 +1,4 @@
-package me.petersoj.util.adapters;
+package me.petersoj.util.gson.adapters;
 
 import com.google.gson.*;
 import me.petersoj.report.Report;
