@@ -1,4 +1,9 @@
 TODO
+- Async File I/O just in case there is an issue.
+- Add 'go frame by frame' in recording viewer.
+- Add exact POV of any recorded player.
+- Add see inventory.
+- Add recording player chat messages and as holograms above recorded players head.
 - Report needs multiple reviews by reviewers before ban. (Review ban max can be set in config)
 - Mark for further review button.
 - Add report review ban-able permission

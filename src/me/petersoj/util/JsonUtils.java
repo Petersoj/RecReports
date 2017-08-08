@@ -2,6 +2,7 @@ package me.petersoj.util;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import me.petersoj.report.Report;
 import me.petersoj.report.ReportPlayer;
@@ -31,11 +32,13 @@ public class JsonUtils {
     public static final ReportAdapter REPORT_ADAPTER = new ReportAdapter();
 
     private static final Gson gson; // So I don't have to create a new Gson instance every time.
+    private static final JsonParser jsonParser = new JsonParser(); // So I don't have to create a new JsonParser instance every time.
 
     static {
         gson = new GsonBuilder()
                 .registerTypeAdapter(Location.class, LOCATION_ADAPTER)
                 .registerTypeAdapter(ReportPlayer.class, REPORT_PLAYER_ADAPTER)
+                .registerTypeAdapter(Report.class, REPORT_ADAPTER)
                 .create();
 
         // TypeToken has to be anonymous for some speciality.
@@ -55,5 +58,9 @@ public class JsonUtils {
 
     public static Gson getGson() {
         return gson;
+    }
+
+    public static JsonParser getJsonParser() {
+        return jsonParser;
     }
 }

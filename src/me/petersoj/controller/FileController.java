@@ -42,7 +42,7 @@ public class FileController {
         this.recordThreshold = config.getInt("record-threshold");
         this.banThreshold = config.getInt("ban-threshold");
         this.recordingTime = config.getInt("recording-time");
-        this.reportTypes = (List<String>) config.getList("report-type-list");
+        this.reportTypes = (List<String>) config.getList("report-type-chat-list");
         this.reportCommandCooldown = config.getInt("report-command-cooldown");
         this.loggingEnabled = config.getBoolean("logging-enabled");
     }

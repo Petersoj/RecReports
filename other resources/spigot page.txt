@@ -4,7 +4,7 @@
 
 [IMG]http://i.imgur.com/Czxt4po.png[/IMG]
 
-This plugin, at its core, simply records player movement and actions when other players on the server report a user, using the "/report" command, and will playback the recording on-demand when a moderator or staff member wants to view it. The playback interface is intuitive and has many controls such as: play/pause, move 10 seconds forward or back, ban the player on the spot, mark for further review, and more. This plugins also contains lots of configuration to tune this plugin to you and your servers' liking.
+This plugin, at its core, simply records player movement and actions when other players on the server report a user, using the "/report" command, and will playback the recording on-demand when a player with the right permissions wants to view it. The playback interface is intuitive and has many controls such as: play/pause, move 10 seconds forward or back, ban the player on the spot, mark for further review, and more. This plugins also contains lots of configuration to tune this plugin to you and your servers' liking.
 
 [IMG]http://i.imgur.com/bxEGTB8.png[/IMG]
 

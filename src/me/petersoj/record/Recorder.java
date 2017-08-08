@@ -22,20 +22,16 @@ import java.util.ArrayList;
  */
 public class Recorder {
 
-    private static int MAX_FRAME_COUNT; // Maximum frame count aka recording time limit.
-
     private FileController fileController;
 
     private ReportsFolder reportsFolder;
     private int frameCount;
-    private int emptyFrameCount;
     private Frame currentFrame;
     private Gson gson = JsonUtils.getGson();
     private LocationAdapter locationAdapter = JsonUtils.LOCATION_ADAPTER;
     private ReportPlayerAdapter reportPlayerAdapter = JsonUtils.REPORT_PLAYER_ADAPTER;
     private ReportAdapter reportAdapter = JsonUtils.REPORT_ADAPTER;
     private BufferedWriter writer;
-
     private Player reportedPlayer;
     private ArrayList<ReportPlayer> otherRecordedPlayers;
 
@@ -48,20 +44,12 @@ public class Recorder {
         this.otherRecordedPlayers = new ArrayList<>();
     }
 
-    public static int getMaxFrameCount() {
-        return MAX_FRAME_COUNT;
-    }
-
-    public static void setMaxFrameCount(int frameCount) {
-        MAX_FRAME_COUNT = frameCount;
-    }
-
     /**
      * Attempts to start the recording by creating the recording file stream.
      *
      * @return true if the recording file could be created.
      */
-    public boolean startRecording() {
+    public synchronized boolean startRecording() {
         if (writer == null) {
             // Create a new BufferedWriter to a file with currentTimeMillis as the name.
             String recordingName = String.valueOf(System.currentTimeMillis());
@@ -82,7 +70,7 @@ public class Recorder {
      *
      * @return true if the recording was stopped successfully.
      */
-    public boolean stopRecording() {
+    public synchronized boolean stopRecording() {
         if (writer == null) {
             return false;
         }
@@ -110,7 +98,7 @@ public class Recorder {
      * This method will convert the currentFrame object into a json string
      * and write it to the disk.
      */
-    public void serializeFrame() {
+    public void serializeCurrentFrame() {
         StringBuilder jsonString = new StringBuilder(40); // Initial capacity of 40 characters.
         jsonString.append("["); // Don't add comma before because of first frame.
 
@@ -136,7 +124,8 @@ public class Recorder {
             serializeObject(currentFrame.getReportsInFrame(), JsonUtils.ARRAYLIST_REPORT, jsonString);
         }
 
-        reportPlayerAdapter.setSerializeFullReportPlayer(false); // ReportPlayer within HashMap should not be serialized for below.
+        reportPlayerAdapter.setSerializeFullReportPlayer(false); // ReportPlayer within HashMap should not be serialized for all of below.
+
         locationAdapter.setIncludeWorlds(false); // Worlds should not be serialized for below.
         locationAdapter.setCheckMovementType(true); // The Location within playerLocations will have various movement types encoded in the Location.
         if (currentFrame.hasPlayerLocationChange()) {
@@ -164,26 +153,16 @@ public class Recorder {
             serializeObject(currentFrame.getEquipmentChanges(), JsonUtils.MAP_EQUIPMENT_TYPE, jsonString);
         }
 
-        // Below are the final steps for serializing this frame.
-
-        if (jsonString.length() == 1) { // Check to see if frame only contains the open bracket, aka no extra data was added.
-            this.emptyFrameCount++;
-        } else {
-            if (emptyFrameCount > 0) { // Writing empty frame count
-                this.write("[{\"empty\":" + emptyFrameCount + "}]"); // Write empty frame count so the playback knows.
-                if (frameCount < MAX_FRAME_COUNT) { // Don't write for next object if max frame count reached.
-                    this.write(","); // Write a comma for next object about to be written.
-                }
-                this.emptyFrameCount = 0;
-            }
-            // Remove the last objects comma to prevent data parsing errors.
-            int lastIndex = jsonString.length() - 1;
-            if (jsonString.charAt(lastIndex) == ',') {
-                jsonString.deleteCharAt(lastIndex);
-            }
-            // Finally write out to the bufferedWriter.
-            this.write(jsonString.toString());
+        // Remove the last objects comma to prevent data parsing errors.
+        int lastIndex = jsonString.length() - 1;
+        if (jsonString.charAt(lastIndex) == ',') {
+            jsonString.deleteCharAt(lastIndex);
         }
+
+        jsonString.append("]"); // End off this frame object array.
+
+        // Finally write out to the bufferedWriter.
+        this.write(jsonString.toString());
     }
 
     private void serializeObject(Object object, Type type, StringBuilder stringBuilder) {

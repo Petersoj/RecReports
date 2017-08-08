@@ -35,7 +35,7 @@ public class ReportPlayerAdapter implements JsonSerializer<ReportPlayer>, JsonDe
         if (deserializerRecordingPlayback == null) {
             return context.deserialize(jsonElement, type);
         } else {
-            JsonObject object = (JsonObject) jsonElement;
+            JsonObject object = jsonElement.getAsJsonObject();
             int pid = object.getAsJsonPrimitive("pid").getAsInt();
 
             for (RecordedPlayer recordedPlayer : deserializerRecordingPlayback.getRecordedPlayers()) {

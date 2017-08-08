@@ -33,25 +33,24 @@ ban-threshold: 15
 # 5 minutes is a good default value.
 recording-time: 5
 
-# This is the list that shows up in that when a player types the "/report"
+# This is the list that shows up in chat when a player types the "/report"
 # command. This list will provide the reporting player types of
 # hacking and/or behavior to choose from. This list should be concise
 # and shouldn't contain specific hacks, as that would get very large and
 # would be overwhelming to choose one. This list should be less than 10
 # items in size, but you can have more if you want. The 'other' option
-# is the option that will bring up the sign GUI to type a custom message
-# into. This list supports color codes.
+# is the option that will bring up the sign interface to type a custom
+# message into. This list supports color codes.
 # Make sure that you use 2 spaces to indent, and not a 'tab'.
-report-type-list:
+report-type-chat-list:
   - &9 Movement Hacking
   - &c Combat Hacking
-  - &f Chat
   - &e Other
 
 # This option sets the cooldown time, in seconds, before a player can use
 # the "/report" command again. This prevents players spamming this command.
-# 120 seconds is a good default value.
-report-command-cooldown: 120
+# 90 seconds is a good default value.
+report-command-cooldown: 90
 
 # This option enables or disables console logging of warnings and other
 # useful information. This option does not disable errors in the console log.

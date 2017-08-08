@@ -1,7 +1,7 @@
 package me.petersoj.controller;
 
 import me.petersoj.RecReportsPlugin;
-import me.petersoj.record.Recorder;
+import me.petersoj.record.Frame;
 
 /**
  * This singleton controller class
@@ -19,7 +19,7 @@ public class RecordingController {
 
     private void setupRecorder() {
         int time = plugin.getFileController().getRecordingTime() * 60 * 20; // minutes * seconds in minute * ticks in second
-        Recorder.setMaxFrameCount(time);
+        Frame.MAX_FRAME_COUNT = time; // set the max frame count for a recording.
     }
 
     public void start() {

@@ -1,11 +1,14 @@
 package me.petersoj.report;
 
+import java.util.ArrayList;
+
 /**
  * This class is just a data holder for info.txt and Gson will do the [de]serializing.
  */
 public class ReportInfo {
 
-    private ReportPlayer reportedPlayer = new ReportPlayer(0, null, ""); // Default ReportPlayer, ID is always 0 for reportedPlayer.
+    private final ReportPlayer reportedPlayer = new ReportPlayer(0, null, ""); // Default ReportPlayer, ID is always 0 for reportedPlayer.
+    private final ArrayList<String> recordingFileNames = new ArrayList<>();
     private int totalReports;
     private int totalRecordings;
     private String mostReportedType = "N/A"; // N/A for default
@@ -16,6 +19,14 @@ public class ReportInfo {
 
     public ReportPlayer getReportedPlayer() {
         return reportedPlayer;
+    }
+
+    public ArrayList<String> getRecordingFileNames() {
+        return recordingFileNames;
+    }
+
+    public void addRecordingFileName(String name) {
+        this.recordingFileNames.add(name);
     }
 
     public int getTotalReports() {

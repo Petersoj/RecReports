@@ -14,6 +14,8 @@ import java.util.HashMap;
  */
 public class Frame {
 
+    public static int MAX_FRAME_COUNT; // Maximum frame count aka recording time limit.
+
     private HashMap<ReportPlayer, Location> spawnedPlayers;
     private String reportedPlayerQuitMessage;
     private ArrayList<Integer> despawnedPlayerIDs;
@@ -26,7 +28,7 @@ public class Frame {
     private ArrayList<ReportPlayer> damageAnimations;
     private HashMap<ReportPlayer, HashMap<Integer, ItemStack>> equipmentChanges;
 
-    public Frame() {
+    Frame() {
         this.spawnedPlayers = new HashMap<>();
         this.despawnedPlayerIDs = new ArrayList<>();
         this.reportsInFrame = new ArrayList<>();
@@ -58,8 +60,7 @@ public class Frame {
 
     /*
 
-    The below methods are for logging player actions which will be later serialized
-    for writing to the disk.
+    The below methods are for logging player actions which will be later serialized.
 
      */
 
@@ -67,7 +68,7 @@ public class Frame {
         this.spawnedPlayers.put(spawnedPlayer, spawnLocation);
     }
 
-    public void logReportedPlayerQuit(String message) {
+    public void logReportedPlayerQuitMessage(String message) {
         this.reportedPlayerQuitMessage = message;
     }
 
@@ -232,5 +233,55 @@ public class Frame {
 
     public HashMap<ReportPlayer, HashMap<Integer, ItemStack>> getEquipmentChanges() {
         return equipmentChanges;
+    }
+
+    /*
+
+    Below are the methods for RecordingPlayback to allow easy setting of Gson deserialized maps and objects.
+
+     */
+
+    protected void setSpawnedPlayers(HashMap<ReportPlayer, Location> spawnedPlayers) {
+        this.spawnedPlayers = spawnedPlayers;
+    }
+
+    protected void setReportedPlayerQuitMessage(String reportedPlayerQuitMessage) {
+        this.reportedPlayerQuitMessage = reportedPlayerQuitMessage;
+    }
+
+    protected void setDespawnedPlayerIDs(ArrayList<Integer> despawnedPlayerIDs) {
+        this.despawnedPlayerIDs = despawnedPlayerIDs;
+    }
+
+    protected void setReportsInFrame(ArrayList<Report> reportsInFrame) {
+        this.reportsInFrame = reportsInFrame;
+    }
+
+    protected void setPlayerLocations(HashMap<ReportPlayer, Location> playerLocations) {
+        this.playerLocations = playerLocations;
+    }
+
+    protected void setReportedPlayerWorldChange(Location reportedPlayerWorldChange) {
+        this.reportedPlayerWorldChange = reportedPlayerWorldChange;
+    }
+
+    protected void setPlayersSneaking(HashMap<ReportPlayer, Boolean> playersSneaking) {
+        this.playersSneaking = playersSneaking;
+    }
+
+    protected void setPlayersOnFire(HashMap<ReportPlayer, Boolean> playersOnFire) {
+        this.playersOnFire = playersOnFire;
+    }
+
+    protected void setSwingingArms(ArrayList<ReportPlayer> swingingArms) {
+        this.swingingArms = swingingArms;
+    }
+
+    protected void setDamageAnimations(ArrayList<ReportPlayer> damageAnimations) {
+        this.damageAnimations = damageAnimations;
+    }
+
+    protected void setEquipmentChanges(HashMap<ReportPlayer, HashMap<Integer, ItemStack>> equipmentChanges) {
+        this.equipmentChanges = equipmentChanges;
     }
 }

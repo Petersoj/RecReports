@@ -31,10 +31,11 @@ public class ReportAdapter implements JsonSerializer<Report>, JsonDeserializer<R
         if (!(jsonElement instanceof JsonObject)) {
             throw new JsonParseException("Element must be an object!");
         }
+
         if (reportsFolder == null) {
             return context.deserialize(jsonElement, type);
         } else {
-            JsonObject object = (JsonObject) jsonElement;
+            JsonObject object = jsonElement.getAsJsonObject();
             int rid = object.getAsJsonPrimitive("rid").getAsInt();
 
             return reportsFolder.getReportByID(rid);

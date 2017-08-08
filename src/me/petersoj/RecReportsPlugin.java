@@ -3,7 +3,6 @@ package me.petersoj;
 import me.petersoj.controller.*;
 import me.petersoj.listeners.Commands;
 import me.petersoj.listeners.Listeners;
-import me.petersoj.nms.NMSVersion;
 import me.petersoj.util.DebugUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -29,16 +28,18 @@ public class RecReportsPlugin extends JavaPlugin implements Listener {
         // Set Utils instances up
         DebugUtils.setPluginInstance(this);
 
-        if (!NMSVersion.setupVersion()) {
+        // Create NMSController for version check
+        this.nmsController = new NMSController(this);
+
+        if (!nmsController.setupNMSVersion()) {
             return; // Don't do the rest of onEnable()
         }
 
         Bukkit.getPluginManager().registerEvents(this, this);
 
-        // Init Controllers
+        // Init other Controllers
         this.recReportsController = new RecReportsController(this);
         this.fileController = new FileController(this);
-        this.nmsController = new NMSController(this);
         this.reportsController = new ReportsController();
         this.recordingController = new RecordingController(this);
 
@@ -46,9 +47,10 @@ public class RecReportsPlugin extends JavaPlugin implements Listener {
         this.listeners = new Listeners(this);
         this.commands = new Commands(this);
 
-        // Start controllers and listeners
-        this.fileController.start();
+        // Start/setup controllers and listeners
         this.recReportsController.start();
+        this.fileController.start();
+        this.nmsController.setup();
         this.listeners.listen();
     }
 

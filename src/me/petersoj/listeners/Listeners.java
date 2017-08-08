@@ -11,6 +11,7 @@ import io.netty.channel.ChannelPromise;
 import me.petersoj.RecReportsPlugin;
 import me.petersoj.listeners.events.SignUpdateEvent;
 import me.petersoj.nms.players.RecordedPlayerv1_12;
+import me.petersoj.report.ReportInfo;
 import me.petersoj.report.ReportPlayer;
 import net.minecraft.server.v1_12_R1.*;
 import org.apache.commons.lang3.reflect.FieldUtils;
@@ -220,6 +221,32 @@ public class Listeners implements Listener, SignUpdateEvent {
                         }.getType());
 
                 System.out.println(mapp.get(e.getPlayer().getUniqueId()).get("hey there").getZ());
+            } catch (Exception ee) {
+                ee.printStackTrace();
+            }
+        }
+
+        if (e.getMessage().equals("/testReportInfo")) {
+            Gson gson = new GsonBuilder().create();
+
+            ReportInfo info = new ReportInfo();
+            info.addRecordingFileName("123123123");
+            info.getReportedPlayer().setPlayerID(4);
+            info.setMostReportedType("other");
+
+            try {
+                Files.write(Paths.get("/Users/Jacob/Desktop/test.txt"), gson.toJson(info).getBytes());
+            } catch (Exception ee) {
+                ee.printStackTrace();
+            }
+
+            try {
+                byte[] bytes = Files.readAllBytes(Paths.get("/Users/Jacob/Desktop/test.txt"));
+
+                ReportInfo reportInfo = gson.fromJson(new String(bytes), ReportInfo.class);
+                System.out.println(reportInfo.getReportedPlayer().getPlayerID());
+                System.out.println(reportInfo.getRecordingFileNames().get(0));
+
             } catch (Exception ee) {
                 ee.printStackTrace();
             }

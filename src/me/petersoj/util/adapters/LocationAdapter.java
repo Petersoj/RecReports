@@ -81,7 +81,7 @@ public class LocationAdapter implements JsonSerializer<Location>, JsonDeserializ
             throw new JsonParseException("The element given is not a JsonObject!");
         }
 
-        JsonObject locationObj = (JsonObject) element;
+        JsonObject locationObj = element.getAsJsonObject();
 
         JsonElement worldElement = locationObj.get("world");
         JsonElement xElement = locationObj.get("x");
