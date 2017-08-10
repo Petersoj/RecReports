@@ -28,7 +28,7 @@ public class Frame {
     private ArrayList<ReportPlayer> damageAnimations;
     private HashMap<ReportPlayer, HashMap<Integer, ItemStack>> equipmentChanges;
 
-    Frame() {
+    public Frame() {
         this.spawnedPlayers = new HashMap<>();
         this.despawnedPlayerIDs = new ArrayList<>();
         this.reportsInFrame = new ArrayList<>();

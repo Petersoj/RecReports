@@ -13,6 +13,8 @@ public abstract class NMSHandler {
         this.plugin = plugin;
     }
 
+    public abstract ReportPlayer getNewReportPlayer(int playerID, Player player);
+
     public abstract RecordedPlayer getNewRecordedPlayer(RecReportsPlugin plugin, ReportPlayer reportPlayer, Player sendPacketsPlayer);
 
     public abstract void openSignInterface(Player player, String[] initialText, String[] finalText, int delayToFinal);

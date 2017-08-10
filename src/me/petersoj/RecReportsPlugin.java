@@ -1,6 +1,9 @@
 package me.petersoj;
 
-import me.petersoj.controller.*;
+import me.petersoj.controller.FileController;
+import me.petersoj.controller.NMSController;
+import me.petersoj.controller.RecordingController;
+import me.petersoj.controller.ReportsController;
 import me.petersoj.listeners.Commands;
 import me.petersoj.listeners.Listeners;
 import me.petersoj.util.DebugUtils;
@@ -14,7 +17,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class RecReportsPlugin extends JavaPlugin implements Listener {
 
-    private RecReportsController recReportsController;
     private FileController fileController;
     private NMSController nmsController;
     private ReportsController reportsController;
@@ -38,9 +40,8 @@ public class RecReportsPlugin extends JavaPlugin implements Listener {
         Bukkit.getPluginManager().registerEvents(this, this);
 
         // Init other Controllers
-        this.recReportsController = new RecReportsController(this);
         this.fileController = new FileController(this);
-        this.reportsController = new ReportsController();
+        this.reportsController = new ReportsController(this);
         this.recordingController = new RecordingController(this);
 
         // Init Listening
@@ -48,7 +49,6 @@ public class RecReportsPlugin extends JavaPlugin implements Listener {
         this.commands = new Commands(this);
 
         // Start/setup controllers and listeners
-        this.recReportsController.start();
         this.fileController.start();
         this.nmsController.setup();
         this.listeners.listen();
@@ -98,10 +98,6 @@ public class RecReportsPlugin extends JavaPlugin implements Listener {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         return commands.onCommand(sender, command, label, args);
-    }
-
-    public RecReportsController getRecReportsController() {
-        return recReportsController;
     }
 
     public ReportsController getReportsController() {

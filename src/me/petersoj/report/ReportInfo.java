@@ -13,7 +13,6 @@ public class ReportInfo {
     private int totalRecordings;
     private String mostReportedType = "N/A"; // N/A for default
     private long lastReportTime;
-    private long firstReportTime;
     private long lastReviewedTime;
     private int timesReviewed;
 
@@ -59,14 +58,6 @@ public class ReportInfo {
 
     public void setLastReportTime(long lastReportTime) {
         this.lastReportTime = lastReportTime;
-    }
-
-    public long getFirstReportTime() {
-        return firstReportTime;
-    }
-
-    public void setFirstReportTime(long firstReportTime) {
-        this.firstReportTime = firstReportTime;
     }
 
     public long getLastReviewedTime() {

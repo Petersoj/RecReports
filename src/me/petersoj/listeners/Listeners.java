@@ -30,12 +30,10 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 
 public class Listeners implements Listener, SignUpdateEvent {
@@ -54,6 +52,7 @@ public class Listeners implements Listener, SignUpdateEvent {
     @Override
     public void onSignUpdate(Location location, String[] lines) {
         // Process 'other' report type
+        System.out.println("sign");
     }
 
     @SuppressWarnings("unchecked")
@@ -95,6 +94,8 @@ public class Listeners implements Listener, SignUpdateEvent {
         }
     }
 
+    boolean money = false;
+
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
         ((CraftPlayer) e.getPlayer()).getHandle().playerConnection.networkManager.channel.pipeline().addBefore("packet_handler", "something", new ChannelDuplexHandler() {
@@ -120,6 +121,15 @@ public class Listeners implements Listener, SignUpdateEvent {
 //                        e.printStackTrace();
 //                    }
 //                }
+                if (msg instanceof PacketPlayOutMap && money) {
+                    PacketPlayOutMap map = (PacketPlayOutMap) msg;
+                    Field field = map.getClass().getDeclaredField("i");
+                    field.setAccessible(true);
+                    byte[] bytes = (byte[]) field.get(map);
+                    System.out.println(bytes.length);
+
+
+                }
                 if (msg instanceof PacketPlayOutPosition) {
 //                    PacketPlayOutPosition packetPlayOutPosition = (PacketPlayOutPosition) msg;
 //                    Set<PacketPlayOutPosition.EnumPlayerTeleportFlags> set = (Set<PacketPlayOutPosition.EnumPlayerTeleportFlags>) ReflectionUtils.getObject(packetPlayOutPosition, "f");
@@ -146,6 +156,14 @@ public class Listeners implements Listener, SignUpdateEvent {
 
     @EventHandler
     public void onCmd(PlayerCommandPreprocessEvent e) {
+        if (e.getMessage().equals("/ff")) {
+            money = false;
+            byte[] bytes = new byte[128 * 128];
+            Arrays.fill(bytes, (byte) ((51 * 4) & 0xFF));
+            PacketPlayOutMap map = new PacketPlayOutMap(4, (byte) 1, false, new ArrayList<>(), bytes, 0, 0, 128, 128);
+            ((CraftPlayer) e.getPlayer()).getHandle().playerConnection.sendPacket(map);
+        }
+
         if (e.getMessage().equals("/poop")) {
 
             Player player = e.getPlayer();

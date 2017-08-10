@@ -1,6 +1,7 @@
 package me.petersoj.record;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import me.petersoj.controller.FileController;
 import me.petersoj.nms.RecordedPlayer;
@@ -11,8 +12,7 @@ import me.petersoj.util.JsonUtils;
 import java.util.ArrayList;
 
 /**
- * This class will playback a previously saved recording and will aid
- * in the updating of the ReportViewingController.
+ * This class will playback a previously saved recording.
  */
 public class RecordingPlayback {
 
@@ -70,7 +70,9 @@ public class RecordingPlayback {
      * @param frameIndex the frame index from the recordingArray
      */
     private void deserializeFrame(int frameIndex) {
-        JsonArray frameArray = recordingArray.get(frameIndex).getAsJsonArray();
+        JsonObject frameObject = recordingArray.get(frameIndex).getAsJsonObject();
+
+        JsonUtils.DESERIALIZATION_EXCLUSION_STRATEGY.setExclusionChecking(true);
 
     }
 

@@ -89,7 +89,7 @@ public class Recorder {
      * and write it to the disk.
      */
     public void serializeCurrentFrame() {
-        JsonUtils.SERIALIZATION_EXCLUSION_STRATEGY.setExclusionChecking(true); // make sure to check fields before we serialize.
+        JsonUtils.SERIALIZATION_EXCLUSION_STRATEGY.setExclusionChecking(true); // Make sure to check certain fields in the currentFrame.
 
         // Write out the currentFrame object using Gson :)  SO EASY!
         this.write(JsonUtils.getGson().toJson(currentFrame, Frame.class));

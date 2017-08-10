@@ -1,5 +1,6 @@
 package me.petersoj.nms.handlers;
 
+import com.mojang.authlib.properties.Property;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import me.petersoj.RecReportsPlugin;
@@ -23,6 +24,16 @@ public class NMSHandlerv1_8_8 extends NMSHandler {
 
     public NMSHandlerv1_8_8(RecReportsPlugin plugin) {
         super(plugin);
+    }
+
+    @Override
+    public ReportPlayer getNewReportPlayer(int playerID, Player player) {
+        ReportPlayer reportPlayer = new ReportPlayer(playerID, player.getUniqueId(), player.getName());
+        for (Property property : this.getEntityPlayer(player).getProfile().getProperties().get("textures")) {
+            reportPlayer.setSkinProfileValue(property.getValue());
+            reportPlayer.setSkinProfileSignature(property.getSignature());
+        }
+        return reportPlayer;
     }
 
     @Override
