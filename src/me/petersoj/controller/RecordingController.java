@@ -14,12 +14,11 @@ public class RecordingController {
     public RecordingController(RecReportsPlugin plugin) {
         this.plugin = plugin;
 
-        this.setupRecorder();
+        this.setup();
     }
 
-    private void setupRecorder() {
-        int time = plugin.getFileController().getRecordingTime() * 60 * 20; // minutes * seconds in minute * ticks in second
-        Frame.MAX_FRAME_COUNT = time; // set the max frame count for a recording.
+    private void setup() {
+        Frame.MAX_FRAME_COUNT = plugin.getFileController().getRecordingTime() * 60 * 20; // set the max frame count for a recording.
     }
 
     public void start() {

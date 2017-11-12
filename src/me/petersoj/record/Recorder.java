@@ -77,14 +77,6 @@ public class Recorder {
     }
 
     /**
-     * This method captures a players movements as well as surrounding players' movements
-     * and inserts them into the Frame.
-     */
-    public void captureFrame() {
-
-    }
-
-    /**
      * This method will convert the currentFrame object into a json string
      * and write it to the disk.
      */

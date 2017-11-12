@@ -16,24 +16,32 @@ import me.petersoj.report.ReportPlayer;
 import net.minecraft.server.v1_12_R1.*;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.v1_12_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.server.MapInitializeEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.map.MapRenderer;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 
 public class Listeners implements Listener, SignUpdateEvent {
@@ -94,7 +102,7 @@ public class Listeners implements Listener, SignUpdateEvent {
         }
     }
 
-    boolean money = false;
+    boolean money;
 
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
@@ -122,12 +130,33 @@ public class Listeners implements Listener, SignUpdateEvent {
 //                    }
 //                }
                 if (msg instanceof PacketPlayOutMap && money) {
-                    PacketPlayOutMap map = (PacketPlayOutMap) msg;
-                    Field field = map.getClass().getDeclaredField("i");
-                    field.setAccessible(true);
-                    byte[] bytes = (byte[]) field.get(map);
-                    System.out.println(bytes.length);
+//                    PacketPlayOutMap map = (PacketPlayOutMap) msg;
+//                    Field field = map.getClass().getDeclaredField("i");
+//                    field.setAccessible(true);
+//                    byte[] bytes = (byte[]) field.get(map);
+//
+//                    Field bytee = map.getClass().getDeclaredField("b");
+//                    bytee.setAccessible(true);
+//                    System.out.println(bytee.getByte(map));
+//                    System.out.println(bytes.length);
+                    return;
+                }
+                if (msg instanceof PacketPlayOutMapChunk) {
+                    PacketPlayOutMapChunk chunk = (PacketPlayOutMapChunk) msg;
+                    int x = FieldUtils.getDeclaredField(chunk.getClass(), "a", true).getInt(chunk);
+                    int z = FieldUtils.getDeclaredField(chunk.getClass(), "b", true).getInt(chunk);
+                    System.out.println("chunk: " + x + "   " + z);
+                }
 
+                if (msg instanceof PacketPlayOutMultiBlockChange) {
+                    PacketPlayOutMultiBlockChange change = (PacketPlayOutMultiBlockChange) msg;
+
+                    System.out.println("multi change");
+                }
+
+                if (msg instanceof PacketPlayOutBlockChange) {
+                    PacketPlayOutBlockChange change = (PacketPlayOutBlockChange) msg;
+                    System.out.println("one change");
 
                 }
                 if (msg instanceof PacketPlayOutPosition) {
@@ -152,15 +181,83 @@ public class Listeners implements Listener, SignUpdateEvent {
                 super.channelRead(ctx, msg);
             }
         });
+
+    }
+
+    @EventHandler
+    public void onMap(MapInitializeEvent e) {
+        for (MapRenderer renderer : e.getMap().getRenderers()) {
+            e.getMap().removeRenderer(renderer);
+        }
+        System.out.println(e.getMap().isVirtual());
     }
 
     @EventHandler
     public void onCmd(PlayerCommandPreprocessEvent e) {
         if (e.getMessage().equals("/ff")) {
-            money = false;
-            byte[] bytes = new byte[128 * 128];
-            Arrays.fill(bytes, (byte) ((51 * 4) & 0xFF));
-            PacketPlayOutMap map = new PacketPlayOutMap(4, (byte) 1, false, new ArrayList<>(), bytes, 0, 0, 128, 128);
+//            money = true;
+////            byte[] bytes = new byte[128 * 128];
+////            Arrays.fill(bytes, (byte) ((51 * 4) & 0xFF));
+////            PacketPlayOutMap map = new PacketPlayOutMap(5, (byte) 1, false, new ArrayList<>(), bytes, 0, 0, 128, 128);
+////            ((CraftPlayer) e.getPlayer()).getHandle().playerConnection.sendPacket(map);
+//            Location loc = e.getPlayer().getLocation();
+//
+//            e.getPlayer().teleport(loc.clone().add(10000, 0, 0));
+//            PacketPlayOutUnloadChunk unloadChunk = new PacketPlayOutUnloadChunk(loc.getChunk().getX(), loc.getChunk().getZ());
+//            ((CraftPlayer) e.getPlayer()).getHandle().playerConnection.sendPacket(unloadChunk);
+//
+//            new BukkitRunnable() {
+//                @Override
+//                public void run() {
+//
+//                }
+//            }.runTaskLater(plugin, 20);
+//
+//            new BukkitRunnable() {
+//                @Override
+//                public void run() {
+//                    e.getPlayer().teleport(loc);
+//                }
+//            }.runTaskLater(plugin, 80);
+            ArmorStand armorStand = (ArmorStand) e.getPlayer().getWorld().spawnEntity(e.getPlayer().getLocation(), EntityType.ARMOR_STAND);
+
+            Location armorStandLocation = armorStand.getLocation(); // Save the Location
+
+//"plugin" is our main class.
+
+            new BukkitRunnable() {
+
+                public void run() {
+
+                    armorStandLocation.setPitch((float) (armorStandLocation.getPitch() + 0.5));
+
+                    armorStandLocation.setYaw((float) (armorStandLocation.getYaw() - 0.5));
+
+
+                    ((CraftEntity) armorStand).getHandle().setPositionRotation(armorStandLocation.getX(), armorStandLocation.getY(), armorStandLocation.getZ(), armorStandLocation.getYaw(), armorStandLocation.getPitch());
+
+
+                }
+            }.runTaskTimer(plugin, 0, 0);
+
+            Player player = e.getPlayer();
+
+            player.setGameMode(GameMode.SPECTATOR);
+
+            player.setSpectatorTarget(armorStand);
+        }
+
+        if (e.getMessage().equals("/map")) {
+//            Location block = e.getPlayer().getLocation().getBlock().getLocation();
+//            for (Entity en : e.getPlayer().getWorld().getEntities()) {
+//                if (en instanceof ItemFrame) {
+//                    ((CraftItemFrame) en).setItem(new ItemBuilder(Material.MAP).durability((short) 5).build());
+//                }
+//            }
+            e.getPlayer().getInventory().setItemInHand(new ItemStack(Material.MAP, 1, (byte) 6));
+//            byte[] bytes = new byte[128 * 128];
+//            Arrays.fill(bytes, (byte) ((51 * 4) & 0xFF));
+            PacketPlayOutMap map = new PacketPlayOutMap(6, (byte) 0x00, false, new ArrayList<>(), new byte[0], 0, 0, 0, 0);
             ((CraftPlayer) e.getPlayer()).getHandle().playerConnection.sendPacket(map);
         }
 

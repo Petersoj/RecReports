@@ -21,6 +21,7 @@ public class RecordingPlayback {
     private ReportsFolder reportsFolder;
     private JsonArray recordingArray;
     private Frame currentFrame;
+    private int frameIndex;
     private ArrayList<RecordedPlayer> recordedPlayers;
 
     public RecordingPlayback(FileController fileController, ReportsFolder reportsFolder) {
@@ -61,22 +62,35 @@ public class RecordingPlayback {
      * This method will read the next frame from frame index.
      */
     public void readNextFrame() {
-
+        this.deserializeCurrentFrame();
+        this.frameIndex++;
     }
 
     /**
-     * This method will deserialize a json array of object within recording array into currentFrame.
-     *
-     * @param frameIndex the frame index from the recordingArray
+     * This method will deserialize a json object within recording array into currentFrame.
      */
-    private void deserializeFrame(int frameIndex) {
+    private void deserializeCurrentFrame() {
         JsonObject frameObject = recordingArray.get(frameIndex).getAsJsonObject();
 
         JsonUtils.DESERIALIZATION_EXCLUSION_STRATEGY.setExclusionChecking(true);
 
+        // Set currentFrame to deserialized frame from Json.
+        this.currentFrame = JsonUtils.getGson().fromJson(frameObject, Frame.class);
     }
 
     public ArrayList<RecordedPlayer> getRecordedPlayers() {
         return recordedPlayers;
+    }
+
+    public void incrementFrameIndex() {
+        this.frameIndex++;
+    }
+
+    public void setFrameIndex(int frameIndex) {
+        this.frameIndex = frameIndex;
+    }
+
+    public int getFrameIndex() {
+        return frameIndex;
     }
 }

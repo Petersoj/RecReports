@@ -2,6 +2,8 @@ package me.petersoj.util.gson.hooks;
 
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
+import me.petersoj.record.RecordingPlayback;
+import me.petersoj.report.ReportsFolder;
 import me.petersoj.util.JsonUtils;
 import me.petersoj.util.gson.adapters.LocationAdapter;
 import me.petersoj.util.gson.adapters.ReportAdapter;
@@ -48,7 +50,11 @@ public class DeserializationExclusionStrategy implements ExclusionStrategy {
     private HashMap<ReportPlayer, HashMap<Integer, ItemStack>> equipmentChanges;
      */
 
-    public void setExclusionChecking(boolean check) {
+    public synchronized void setExclusionChecking(boolean check) {
         this.exclusionChecking = check;
+    }
+
+    public synchronized void setDeserializationInstances(RecordingPlayback recordingPlayback, ReportsFolder reportsFolder) {
+
     }
 }

@@ -4,6 +4,8 @@ TODO
 - Add exact POV of any recorded player.
 - Add see inventory.
 - Add recording player chat messages and as holograms above recorded players head.
+- Add ability to execute specific command for 'Ban now' and other buttons.
+- Add muting ability in recording view.
 - Add ReportsViewFilter (enum) MOST_REPORTS, MOST_RECORDINGS, MOST_TIMES_REVIEWED, LEAST_TIMES_REVIEWED, LONGEST_NOT_REVIEWED, LONGEST_NOT_REPORTED.
 - Report needs multiple reviews by reviewers before ban. (Review ban max can be set in config)
 - Mark for further review button.

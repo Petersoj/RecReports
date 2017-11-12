@@ -50,7 +50,6 @@ public class RecReportsPlugin extends JavaPlugin implements Listener {
 
         // Start/setup controllers and listeners
         this.fileController.start();
-        this.nmsController.setup();
         this.listeners.listen();
     }
 

@@ -24,6 +24,8 @@ public class ReportsFolder {
         this.fileController = fileController;
         this.playerUUID = playerUUID;
         this.folder = folder;
+        this.reportInfo = new ReportInfo();
+        this.reports = new ArrayList<>();
     }
 
     public void saveData() {

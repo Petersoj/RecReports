@@ -19,9 +19,11 @@ public class NMSController {
 
     public NMSController(RecReportsPlugin plugin) {
         this.plugin = plugin;
+
+        this.setup();
     }
 
-    public void setup() {
+    private void setup() {
         if (isVersion(V1_8_8)) {
             this.nmsHandler = new NMSHandlerv1_8_8(plugin);
         } else if (isVersion(V1_12)) {
